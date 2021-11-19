@@ -1,30 +1,98 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+
+
+
+
+    <div class="container">
+
+        <header>
+
+        </header>
+
+        <main class="main-wrap">
+
+            <aside class="left-panel-wrap">
+
+                <SideNav />
+
+            </aside>
+
+            <article class="article-wrap">
+
+                <router-view/>
+
+            </article>
+
+
+        </main>
+
+
+        <footer>
+
+        </footer>
+
+
+    </div>
+
+
 </template>
 
+<script>
+
+    import SideNav from "@/RendererProcess/components/Root/SideNav.vue";
+
+    export default {
+        components : {
+            SideNav
+        }
+    }
+
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
-}
+    @import "./RendererProcess/assets/cssAssets/utilityClasses.css";
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+    * {
+        scroll-behavior: smooth;
+    }
+
+    body{
+        height: 100vh;
+        overflow: hidden;
+        padding: 0;
+        margin:0;
+    }
+
+
+    #app {
+        height: 100vh;
+    }
+
+    .container{
+        height: 100%;
+        /*background-color: red;*/
+    }
+
+    .main-wrap{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .left-panel-wrap{
+        height: 100vh;
+        width: 300px;
+        background-color: #1e1f26;
+    }
+
+    .article-wrap{
+        flex:1;
+        height: 100vh;
+        /*background-color: #131417;*/
+    }
+
+
+
+
 </style>
