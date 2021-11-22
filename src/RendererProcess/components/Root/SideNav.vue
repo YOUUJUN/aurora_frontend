@@ -1,6 +1,6 @@
 <template>
 
-    <section class="SideNav bg2">
+    <section class="sideNav bg2">
 
 
 
@@ -18,10 +18,20 @@
 
 <style scoped>
 
-    .SideNav{
 
+    .sideNav{
+        flex: 1;
+        width: 100%;
+        border-radius: 20px;
     }
 
 
+    @media (max-width: 900px){
+        .sideNav{
+
+
+        }
+    }
 
 </style>
+

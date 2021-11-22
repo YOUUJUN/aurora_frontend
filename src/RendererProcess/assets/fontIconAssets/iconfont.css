@@ -1,0 +1,25 @@
+@font-face {
+    font-family: "iconfont"; /* Project id 2956456 */
+    src: url('iconfont.ttf?t=1637568782724') format('truetype');
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-suoxiao1:before {
+    content: "\e839";
+}
+
+.icon-suoxiao:before {
+    content: "\e622";
+}
+
+.icon-quanping:before {
+    content: "\ec13";
+}
+

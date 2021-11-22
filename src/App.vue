@@ -1,11 +1,10 @@
 <template>
 
+    <div class="container light_theme">
 
+        <header class="header-wrap">
 
-
-    <div class="container">
-
-        <header>
+            <CustomTitleBar />
 
         </header>
 
@@ -32,6 +31,8 @@
         </footer>
 
 
+        <Bg></Bg>
+
     </div>
 
 
@@ -39,11 +40,25 @@
 
 <script>
 
+    import CustomTitleBar from "@/RendererProcess/components/Root/CustomTitleBar.vue"
     import SideNav from "@/RendererProcess/components/Root/SideNav.vue";
+    import Bg from "@/RendererProcess/components/Root/Bg.vue";
 
     export default {
         components : {
-            SideNav
+            SideNav,
+            Bg,
+            CustomTitleBar,
+        },
+
+        computed : {
+            theme (){
+                return this.$store.state.SettingManager.theme
+            },
+
+            accentColor (){
+                return this.$store.state.SettingManager.accentColor
+            }
         }
     }
 
@@ -51,11 +66,13 @@
 
 <style>
 
+    @import "./RendererProcess/assets/cssAssets/themer.css";
     @import "./RendererProcess/assets/cssAssets/utilityClasses.css";
 
 
     * {
         scroll-behavior: smooth;
+        box-sizing: border-box;
     }
 
     body{
@@ -65,31 +82,43 @@
         margin:0;
     }
 
+    button{
+        -webkit-app-region : no-drag;
+    }
+
 
     #app {
         height: 100vh;
+        background: rgb(8, 8, 8);
     }
 
-    .container{
+    .container {
+        display: flex;
+        flex-direction: column;
         height: 100%;
-        /*background-color: red;*/
+    }
+
+    .header-wrap{
+
     }
 
     .main-wrap{
         display: flex;
+        height: 100vh;
         flex-direction: row;
+        padding: 10px;
+        gap:10px;
     }
 
     .left-panel-wrap{
-        height: 100vh;
+        display: flex;
+        flex-direction: column;
         width: 300px;
-        background-color: #1e1f26;
+        min-width: 300px;
     }
 
     .article-wrap{
         flex:1;
-        height: 100vh;
-        /*background-color: #131417;*/
     }
 
 
