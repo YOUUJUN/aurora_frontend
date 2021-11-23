@@ -92,6 +92,9 @@ pre {
 .light_theme p {
     color: black;
 }
+.light_theme button {
+    color: black;
+}
 .light_theme h1 {
     color: black;
 }

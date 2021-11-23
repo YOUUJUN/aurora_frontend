@@ -10,19 +10,11 @@
 
             <div class="ctrlBtn-wrap">
 
-                <el-button :icon="Search" circle>点我</el-button>
-
-                <button>
-                    <img src="@/RendererProcess/assets/images/minimize.svg">
-                </button>
-
-                <button>
-                    <img src="@/RendererProcess/assets/images/fullscreen.svg">
-                </button>
-
-                <button>
-                    <img src="@/RendererProcess/assets/images/close.svg">
-                </button>
+                <el-button-group>
+                    <el-button class="ctrlBtn" size="mini" :icon="Minus" @click="sendMessageToNode('minimize')"></el-button>
+                    <el-button class="ctrlBtn" size="mini" :icon="FullScreen" @click="sendMessageToNode('maximize')"></el-button>
+                    <el-button class="ctrlBtn" size="mini" :icon="Close" @click="sendMessageToNode('closeWindow')"></el-button>
+                </el-button-group>
 
             </div>
 
@@ -32,10 +24,15 @@
 
 </template>
 
-<script>
-    export default {
-        name: "CustomTitleBar"
-    }
+<script setup>
+    import { FullScreen, Close, Minus } from '@element-plus/icons';
+
+    import {sendMessageToNode} from '@/RendererProcess/utilities/index';
+
+
+
+
+
 </script>
 
 <style scoped>
@@ -45,7 +42,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 5px 20px;
+        padding: 5px 10px 5px 20px;
         width: 100%;
         -webkit-app-region: drag;
     }
@@ -67,9 +64,8 @@
         align-items: center;
     }
 
-    .ctrlBtn-wrap button img{
-        width: 20px;
-        height: auto;
+    .ctrlBtn-wrap .ctrlBtn{
+        padding: 5px 10px;
     }
 
 
