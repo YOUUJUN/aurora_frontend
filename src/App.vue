@@ -111,13 +111,16 @@
     }
 
     .left-panel-wrap{
+        position: relative;
+        flex:0;
         display: flex;
         flex-direction: column;
-        width: 300px;
-        min-width: 300px;
+        width: 220px;
+        min-width: 220px;
     }
 
     .article-wrap{
+        position: relative;
         flex:1;
     }
 

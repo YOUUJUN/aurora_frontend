@@ -1,3 +1,17 @@
+.blurred_bg.blur10 {
+    backdrop-filter: blur(10px);
+}
+.blurred_bg.blur20 {
+    backdrop-filter: blur(20px);
+}
+.blurred_bg.blur30 {
+    backdrop-filter: blur(30px);
+}
+.blurred_bg.blur40 {
+    backdrop-filter: blur(40px);
+}
+
+
 .bg1 {
     background: rgba(255, 255, 255, 0.05);
 }

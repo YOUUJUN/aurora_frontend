@@ -3,10 +3,63 @@ import App from './App.vue'
 import router from './RendererProcess/router'
 import store from './RendererProcess/store'
 
-import {ElButton, ElButtonGroup} from 'element-plus';
+import {
+    ElButton,
+    ElButtonGroup,
+    ElForm,
+    ElFormItem,
+    ElRadio,
+    ElRadioGroup,
+    ElCheckbox,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElDatePicker,
+    ElTimePicker,
+    ElCol,
+    ElSwitch,
+    ElAvatar,
+    ElMenu,
+    ElSubMenu,
+    ElMenuItem,
+    ElMenuItemGroup,
+    ElRadioButton,
+    ElScrollbar,
+    ElIcon,
+    ElDialog,
+    ElTabs,
+    ElDrawer
+
+} from 'element-plus';
 import 'element-plus/dist/index.css'
 
-const components = [ElButton, ElButtonGroup];
+const components = [
+    ElButton,
+    ElButtonGroup,
+    ElForm,
+    ElFormItem,
+    ElRadio,
+    ElRadioGroup,
+    ElCheckbox,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElDatePicker,
+    ElTimePicker,
+    ElCol,
+    ElSwitch,
+    ElAvatar,
+    ElMenu,
+    ElSubMenu,
+    ElMenuItem,
+    ElMenuItemGroup,
+    ElRadioButton,
+    ElScrollbar,
+    ElIcon,
+    ElDialog,
+    ElTabs,
+    ElDrawer
+];
 
 const app = createApp(App);
 

@@ -29,19 +29,29 @@
     --accentColor: #ff8a66;
 }
 
+:root {
+    --v1: #be91c6;
+    --v2: #8a65cc;
+    --v3: #5e30d9;
+    --transparentv3: #5e30d900;
+    --v4: #3b1895;
+    --s1: #fea798;
+    --s2: #ff846e;
+    --cloud: #fea798;
+}
 
 
 
 
 
 .fancy_theme p,
-h1,
-h2,
-h3,
-h4,
-div,
-a,
-pre {
+.fancy_theme h1,
+.fancy_theme h2,
+.fancy_theme h3,
+.fancy_theme h4,
+.fancy_theme div,
+.fancy_theme a,
+.fancy_theme pre {
     color: white;
 }
 

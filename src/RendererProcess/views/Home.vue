@@ -1,60 +1,34 @@
 <template>
-    <h1>Hello World</h1>
+
+    <div class="Home">
+
+<!--            <Form />-->
+            <UserCenter />
+
+            <Dialog />
+
+    </div>
 
 </template>
 
-<script>
-    // @ is an alias to /src
+<script setup>
 
+    import Form from "@/RendererProcess/components/Root/Player/Form.vue";
+    import UserCenter from "@/RendererProcess/components/Root/Player/UserCenter.vue"
 
+    import Dialog from "@/RendererProcess/components/Root/Player/Dialog.vue";
 
-    export default {
-        name: 'Home',
-        components: {
-
-        }
-    }
 </script>
 
 <style scoped>
 
-
-
+    .Home{
+        position: absolute;
+        top:0;
+        bottom:0;
+        width: 100%;
+        overflow: hidden;
+    }
 
 </style>
-
-
-<style scoped>
-    .el-carousel__item h3 {
-        color: #475669;
-        font-size: 14px;
-        opacity: 0.75;
-        line-height: 150px;
-        margin: 0;
-        text-align: center;
-    }
-
-    .el-carousel__item:nth-child(2n) {
-        background-color: #99a9bf;
-    }
-
-    .el-carousel__item:nth-child(2n + 1) {
-        background-color: #d3dce6;
-    }
-</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

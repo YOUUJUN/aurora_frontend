@@ -44,8 +44,6 @@ async function createWindow() {
         win.loadURL('app://./index.html')
     }
 
-
-
     //ipcMain listener
 
     ipcMain.on('minimize', () => {

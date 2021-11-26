@@ -8,6 +8,15 @@
 
         <div class="rightSide">
 
+            <div class="user-wrap">
+
+                <el-avatar
+                        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                        size="small"
+                ></el-avatar>
+
+            </div>
+
             <div class="ctrlBtn-wrap">
 
                 <el-button-group>
@@ -26,10 +35,7 @@
 
 <script setup>
     import { FullScreen, Close, Minus } from '@element-plus/icons';
-
     import {sendMessageToNode} from '@/RendererProcess/utilities/index';
-
-
 
 
 
@@ -58,6 +64,25 @@
         padding:0;
     }
 
+    .rightSide{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+
+    /*-用户-*/
+
+    .user-wrap{
+        display: flex;
+        margin-right: 10px;
+    }
+
+
+
+
+    /*-窗体按钮-*/
     .ctrlBtn-wrap{
         display: flex;
         flex-direction: row;
