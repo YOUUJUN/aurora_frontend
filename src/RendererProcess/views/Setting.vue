@@ -4,6 +4,7 @@
 
         <el-drawer
                 custom-class="Setting blurred_bg blur40 bg2"
+                modal-class="Setting-model"
                 v-model="drawer"
                 title="I am the title"
                 :direction="direction"
@@ -60,7 +61,10 @@
         border-radius: 20px;
     }
 
-
+    .container:deep(.Setting-model){
+        top:40px;
+        height:auto;
+    }
 
 
 </style>

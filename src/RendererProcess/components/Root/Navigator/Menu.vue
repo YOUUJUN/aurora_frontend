@@ -10,7 +10,20 @@
 
                     <div class="functions">
 
+                        <el-menu
+                                default-active="1"
+                                class="el-menu-vertical-demo"
+                        >
+                            <el-menu-item index="1">
+                                <el-icon><HomeFilled /></el-icon>
+                                <span>首页</span>
+                            </el-menu-item>
 
+                            <el-menu-item index="2">
+                                <el-icon><Tickets /></el-icon>
+                                <span>TO-DO</span>
+                            </el-menu-item>
+                        </el-menu>
 
                     </div>
 
@@ -26,6 +39,8 @@
 
             <el-button :icon="Setting" round @click="openSetting()">设置</el-button>
 
+            <el-button :icon="Setting" round>测试</el-button>
+
         </div>
 
     </div>
@@ -40,6 +55,8 @@
 <script setup>
 
     import {
+        HomeFilled,
+        Tickets,
         Setting,
     } from '@element-plus/icons'
 
@@ -100,8 +117,7 @@
     }
 
     .functions{
-        display: flex;
-        flex-direction: column;
+        padding:0 15px;
     }
 
     .setting-wrap{
@@ -112,6 +128,7 @@
     }
 
     .setting-wrap button{
+        margin:6px 0;
         font-size: 16px;
     }
 

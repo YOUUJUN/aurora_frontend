@@ -45,6 +45,10 @@
         margin:8px 0;
     }
 
+    .header h3{
+        margin:10px 0 4px 0;
+    }
+
     .body{
         position: relative;
         flex: 1;
