@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './RendererProcess/router'
 import store from './RendererProcess/store'
+import axios from '@/RendererProcess/utilities/http';
 
 import {
     ElButton,
@@ -28,7 +29,8 @@ import {
     ElIcon,
     ElDialog,
     ElTabs,
-    ElDrawer
+    ElDrawer,
+    ElCard
 
 } from 'element-plus';
 import 'element-plus/dist/index.css'
@@ -58,7 +60,8 @@ const components = [
     ElIcon,
     ElDialog,
     ElTabs,
-    ElDrawer
+    ElDrawer,
+    ElCard
 ];
 
 const app = createApp(App);
@@ -71,3 +74,5 @@ components.forEach((component) => {
 app.use(store)
     .use(router)
     .mount('#app');
+
+app.config.globalProperties.$http = axios;

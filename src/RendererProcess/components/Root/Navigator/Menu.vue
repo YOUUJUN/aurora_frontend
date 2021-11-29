@@ -11,15 +11,21 @@
                     <div class="functions">
 
                         <el-menu
-                                default-active="1"
+                                default-active="/"
+                                :router="true"
                                 class="el-menu-vertical-demo"
                         >
-                            <el-menu-item index="1">
+                            <el-menu-item index="/">
                                 <el-icon><HomeFilled /></el-icon>
                                 <span>首页</span>
                             </el-menu-item>
 
-                            <el-menu-item index="2">
+                            <el-menu-item index="/Crawler">
+                                <el-icon><Tickets /></el-icon>
+                                <span>爬虫管理</span>
+                            </el-menu-item>
+
+                            <el-menu-item index="3">
                                 <el-icon><Tickets /></el-icon>
                                 <span>TO-DO</span>
                             </el-menu-item>
@@ -39,7 +45,7 @@
 
             <el-button :icon="Setting" round @click="openSetting()">设置</el-button>
 
-            <el-button :icon="Setting" round>测试</el-button>
+            <el-button :icon="Setting" round @click="testPost()">测试</el-button>
 
         </div>
 
@@ -85,6 +91,15 @@
             openSetting (){
                 console.log('this.$refs', this.$refs['settingPanel']);
                 this.$refs['settingPanel'].openSetting();
+            },
+
+             testPost() {
+                console.log('this', this.$http);
+                this.$http({
+                    url : '/test',
+                }).then((res)=>{
+                    console.log('res', res);
+                })
             }
         }
     })
