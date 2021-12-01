@@ -66,13 +66,27 @@ const components = [
 
 import {
     Card,
-    Avatar
+    Avatar,
+    Button,
+    Input,
+    InputNumber,
+    Descriptions,
+    Badge,
+    Transfer,
+    Table,
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
 const antComponents = [
     Card,
     Avatar,
+    Button,
+    Input,
+    InputNumber,
+    Descriptions,
+    Badge,
+    Transfer,
+    Table,
 ];
 
 
