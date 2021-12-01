@@ -21,11 +21,11 @@
                             </el-menu-item>
 
                             <el-menu-item index="/Crawler">
-                                <el-icon><Tickets /></el-icon>
+                                <el-icon><BugOutlined /></el-icon>
                                 <span>爬虫管理</span>
                             </el-menu-item>
 
-                            <el-menu-item index="3">
+                            <el-menu-item index="">
                                 <el-icon><Tickets /></el-icon>
                                 <span>TO-DO</span>
                             </el-menu-item>
@@ -65,6 +65,8 @@
         Tickets,
         Setting,
     } from '@element-plus/icons'
+
+    import { BugOutlined } from '@ant-design/icons-vue';
 
     import SettingPanel from "@/RendererProcess/views/Setting.vue";
 

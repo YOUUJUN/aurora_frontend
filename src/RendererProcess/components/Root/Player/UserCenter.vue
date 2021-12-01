@@ -15,6 +15,7 @@
 
                 <h2 class="name">YOUJUN</h2>
                 <P class="describe">Hello world</P>
+                <Dialog />
 
 
             </div>
@@ -40,6 +41,7 @@
 </template>
 
 <script setup>
+    import Dialog from "@/RendererProcess/components/Root/Player/Dialog.vue";
 
     const url = "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg";
 

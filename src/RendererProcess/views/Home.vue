@@ -2,21 +2,13 @@
 
     <div class="Home">
 
-<!--            <Form />-->
-            <UserCenter />
-
-            <Dialog />
+        <router-view></router-view>
 
     </div>
 
 </template>
 
 <script setup>
-
-    import Form from "@/RendererProcess/components/Root/Player/Form.vue";
-    import UserCenter from "@/RendererProcess/components/Root/Player/UserCenter.vue"
-
-    import Dialog from "@/RendererProcess/components/Root/Player/Dialog.vue";
 
 </script>
 

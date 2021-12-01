@@ -64,9 +64,25 @@ const components = [
     ElCard
 ];
 
+import {
+    Card,
+    Avatar
+} from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
+
+const antComponents = [
+    Card,
+    Avatar,
+];
+
+
 const app = createApp(App);
 
 components.forEach((component) => {
+    app.use(component);
+});
+
+antComponents.forEach((component) => {
     app.use(component);
 });
 
