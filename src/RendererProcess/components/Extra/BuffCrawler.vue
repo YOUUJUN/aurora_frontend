@@ -12,7 +12,9 @@
 
                 <a-descriptions title="User Info" bordered>
                     <a-descriptions-item label="Product">Cloud Database</a-descriptions-item>
-                    <a-descriptions-item label="Billing Mode">Prepaid</a-descriptions-item>
+                    <a-descriptions-item label="Billing Mode">
+                        <a-button @click="startBuffCrawler()">启动</a-button>
+                    </a-descriptions-item>
                     <a-descriptions-item label="Automatic Renewal">YES</a-descriptions-item>
                     <a-descriptions-item label="Order time">2018-04-24 18:00:00</a-descriptions-item>
                     <a-descriptions-item label="Usage Time" :span="2">2019-04-24 18:00:00</a-descriptions-item>
@@ -113,6 +115,8 @@
 
 <script>
 
+    import { sendMessageToNode } from "@/RendererProcess/utilities";
+
     import {defineComponent, ref} from 'vue'
 
     const mockData = [];
@@ -152,6 +156,7 @@
 
             const actPage = ref(0);
 
+            /*--data transfer--*/
             const targetKeys = ref(originTargetKeys);
             const disabled = ref(false);
             const showSearch = ref(false);
@@ -161,7 +166,6 @@
             const onChange = (nextTargetKeys) => {
                 console.log('nextTargetKeys', nextTargetKeys);
             };
-
 
             const getRowSelection = ({
                                          disabled,
@@ -185,6 +189,15 @@
                     selectedRowKeys: selectedKeys,
                 };
             };
+
+
+            /*--buff--*/
+
+            const startBuffCrawler = () =>{
+                sendMessageToNode('startBuffCrawler');
+            };
+
+
 
 
             return {

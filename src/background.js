@@ -8,6 +8,9 @@ import {
 } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+
+import { startBuffCrawler } from "./MainProcess/services";
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -61,6 +64,14 @@ async function createWindow() {
 
     ipcMain.on('closeWindow', () => {
         win.close();
+    });
+
+
+
+    /*---buffCrawler---*/
+    ipcMain.on('startBuffCrawler', () => {
+        console.log('let us start buff');
+        startBuffCrawler();
     });
 
 }

@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './RendererProcess/router'
 import store from './RendererProcess/store'
 import axios from '@/RendererProcess/utilities/http';
+import localHttp from '@/RendererProcess/utilities/localhttp';
 
 import {
     ElButton,
@@ -106,3 +107,6 @@ app.use(store)
     .mount('#app');
 
 app.config.globalProperties.$http = axios;
+
+app.config.globalProperties.$http2 = localHttp;
+
