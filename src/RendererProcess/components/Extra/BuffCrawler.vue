@@ -64,22 +64,24 @@
 
                 <a-transfer
                         v-model:target-keys="targetKeys"
-                        :data-source="mockData"
+                        :data-source="buffData"
                         :disabled="disabled"
                         :show-search="showSearch"
-                        :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
                         :show-select-all="true"
+                        class="ok"
+                        :list-style="resetTransferStyle"
                         @change="onChange"
                 >
                     <template
                             #children="{
-                          direction,
-                          filteredItems,
-                          selectedKeys,
-                          disabled: listDisabled,
-                          onItemSelectAll,
-                          onItemSelect,
-                        }"
+                              direction,
+                              filteredItems,
+                              selectedKeys,
+                              disabled: listDisabled,
+                              onItemSelectAll,
+                              onItemSelect,
+                            }"
+                            class="ok"
                     >
                         <a-table
                                 :row-selection="
@@ -91,6 +93,7 @@
                                     })
                                   "
                                 :columns="direction === 'left' ? leftColumns : rightColumns"
+                                :class="{ rightTable : direction === 'right'}"
                                 :data-source="filteredItems"
                                 size="small"
                                 :custom-row="
@@ -119,34 +122,60 @@
 
     import { sendMessageToNode } from "@/RendererProcess/utilities";
 
-    import {defineComponent, ref} from 'vue'
+    import {computed, defineComponent, ref} from 'vue'
 
-    const mockData = [];
-    for (let i = 0; i < 10; i++) {
-        mockData.push({
-            key: i.toString(),
-            title: `content${i + 1}`,
-            description: `description of content${i + 1}`,
-            disabled: i % 4 === 0,
-        });
-    }
+    const buffData = ref([]);
 
-    const originTargetKeys = mockData.filter(item => +item.key % 3 > 1).map(item => item.key);
+
+    const originTargetKeys = [];
 
     const leftTableColumns = [
         {
-            dataIndex: 'title',
-            title: 'Name',
+            dataIndex: 'name',
+            title: '名称',
+            resizable : true,
         },
         {
-            dataIndex: 'description',
-            title: 'Description',
+            dataIndex: 'costPerformance',
+            title: '性价比',
+            resizable : true,
+        },
+        {
+            dataIndex: 'historyPrices',
+            title: 'buff历史价格',
+            resizable : true,
+        },
+        {
+            dataIndex: 'cost',
+            title: '成本',
+            resizable : true,
+        },
+        {
+            dataIndex: 'steamPrice',
+            title: 'steam价格',
+            resizable : true,
+        },
+        {
+            dataIndex: 'difference',
+            title: '差价',
+            resizable : true,
+        },
+        {
+            dataIndex: 'buyNum',
+            title: '销售量',
+            resizable : true,
+        },
+        {
+            dataIndex: 'buffProfits',
+            title: '预估利润',
+            resizable : true,
         },
     ];
     const rightTableColumns = [
         {
-            dataIndex: 'title',
-            title: 'Name',
+            dataIndex: 'name',
+            title: '名称',
+            resizable : true,
         },
     ];
 
@@ -203,13 +232,9 @@
                 sendMessageToNode('getBuffCrawlerLog');
             }
 
-
-
-
             return {
                 actPage,
 
-                mockData,
                 targetKeys,
                 disabled,
                 showSearch,
@@ -219,9 +244,58 @@
                 getRowSelection,
 
                 startBuffCrawler,
-                getBuffCrawlerLog
+                getBuffCrawlerLog,
+
+                buffData
+
             }
 
+        },
+
+        methods : {
+
+            gatherBuff(){
+                this.$http2({
+                    url : "/gatherBuff",
+                    method: 'POST'
+                }).then(msg => {
+                    var msg = msg.data;
+                    this.processBuffData(msg.data);
+                    alert(msg.message);
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+
+            processBuffData (buffData){
+                for (let i = 0; i < buffData.length; i++) {
+                    let data = buffData[i];
+                    this.buffData.push({
+                        key: i.toString(),
+                        name: data.name,
+                        costPerformance: data.costPerformance,
+                        historyPrices : data.historyPrices,
+                        cost : data.cost,
+                        steamPrice : data.steamPrice,
+                        difference : data.difference,
+                        buyNum : data.buyNum,
+                        buffProfits : data.buffProfits
+                    });
+                }
+            },
+
+            resetTransferStyle(params){
+                console.log('params', params)
+                if(params.direction === 'left'){
+                    return {
+                        "flex" : 1
+                    }
+                }else{
+                    return {
+                        "flex" : 0
+                    }
+                }
+            }
         }
 
     })
@@ -270,6 +344,13 @@
     .data-panel{
         padding:15px;
         border-radius: 20px;
+    }
+
+
+    /*--右边穿梭框--*/
+
+    .rightTable{
+        width: 400px;
     }
 
 
