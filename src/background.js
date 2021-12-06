@@ -9,7 +9,7 @@ import {
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 
-import { startBuffCrawler } from "./MainProcess/services";
+import { startBuffCrawler, getBuffCrawlerLog } from "./MainProcess/services";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -22,8 +22,8 @@ async function createWindow() {
     // Create the browser window.
     const win = new BrowserWindow({
         frame : true,
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 800,
         webPreferences: {
 
             // Use pluginOptions.nodeIntegration, leave this alone
@@ -70,8 +70,13 @@ async function createWindow() {
 
     /*---buffCrawler---*/
     ipcMain.on('startBuffCrawler', () => {
-        console.log('let us start buff');
+        console.log('let us start buff    ');
         startBuffCrawler();
+    });
+
+    ipcMain.on('getBuffCrawlerLog', () => {
+        console.log('let us get buff logs    ');
+        getBuffCrawlerLog();
     });
 
 }

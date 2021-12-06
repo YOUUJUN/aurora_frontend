@@ -15,7 +15,9 @@
                     <a-descriptions-item label="Billing Mode">
                         <a-button @click="startBuffCrawler()">启动</a-button>
                     </a-descriptions-item>
-                    <a-descriptions-item label="Automatic Renewal">YES</a-descriptions-item>
+                    <a-descriptions-item label="Automatic Renewal">
+                        <a-button @click="getBuffCrawlerLog()">获取打印日志</a-button>
+                    </a-descriptions-item>
                     <a-descriptions-item label="Order time">2018-04-24 18:00:00</a-descriptions-item>
                     <a-descriptions-item label="Usage Time" :span="2">2019-04-24 18:00:00</a-descriptions-item>
                     <a-descriptions-item label="Status" :span="3">
@@ -66,7 +68,7 @@
                         :disabled="disabled"
                         :show-search="showSearch"
                         :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
-                        :show-select-all="false"
+                        :show-select-all="true"
                         @change="onChange"
                 >
                     <template
@@ -197,6 +199,10 @@
                 sendMessageToNode('startBuffCrawler');
             };
 
+            const getBuffCrawlerLog = () => {
+                sendMessageToNode('getBuffCrawlerLog');
+            }
+
 
 
 
@@ -211,6 +217,9 @@
                 rightColumns,
                 onChange,
                 getRowSelection,
+
+                startBuffCrawler,
+                getBuffCrawlerLog
             }
 
         }

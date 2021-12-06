@@ -23,11 +23,11 @@ const routes = [
     component: Crawler,
     children : [
       {
-        path : '/Crawler',
+        path : '',
         component : CrawlerList
       },
       {
-        path : '/Crawler/BuffCrawler',
+        path : 'BuffCrawler',
         component : BuffCrawler
       }
     ]
