@@ -68,7 +68,8 @@
                         :disabled="disabled"
                         :show-search="showSearch"
                         :show-select-all="true"
-                        class="ok"
+                        showSearch = true
+                        :filter-option= "doSearch"
                         :list-style="resetTransferStyle"
                         @change="onChange"
                 >
@@ -138,36 +139,43 @@
         {
             dataIndex: 'costPerformance',
             title: '性价比',
+            sorter: (a, b) => a.costPerformance - b.costPerformance,
             resizable : true,
         },
         {
             dataIndex: 'historyPrices',
             title: 'buff历史价格',
+            sorter: (a, b) => a.historyPrices - b.historyPrices,
             resizable : true,
         },
         {
             dataIndex: 'cost',
             title: '成本',
+            sorter: (a, b) => a.cost - b.cost,
             resizable : true,
         },
         {
             dataIndex: 'steamPrice',
             title: 'steam价格',
+            sorter: (a, b) => a.steamPrice - b.steamPrice,
             resizable : true,
         },
         {
             dataIndex: 'difference',
             title: '差价',
+            sorter: (a, b) => a.difference - b.difference,
             resizable : true,
         },
         {
             dataIndex: 'buyNum',
             title: '销售量',
+            sorter: (a, b) => a.buyNum - b.buyNum,
             resizable : true,
         },
         {
             dataIndex: 'buffProfits',
             title: '预估利润',
+            sorter: (a, b) => a.buffProfits - b.buffProfits,
             resizable : true,
         },
     ];
@@ -295,6 +303,10 @@
                         "flex" : 0
                     }
                 }
+            },
+
+            doSearch(inputValue, item){
+                return item.name.indexOf(inputValue) > -1;
             }
         }
 
