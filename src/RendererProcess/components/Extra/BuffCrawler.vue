@@ -12,7 +12,7 @@
 
                 <a-descriptions title="Server Info" bordered>
                     <a-descriptions-item label="Product">Buff Crawler</a-descriptions-item>
-                    <a-descriptions-item label="Control Panel" :span="3">
+                    <a-descriptions-item label="Control Panel" :span="2">
                         <a-space>
                             <a-button @click="startBuffCrawler()">启动</a-button>
                             <a-button @click="getBuffCrawlerLog()">获取打印日志</a-button>
@@ -70,7 +70,6 @@
                         :disabled="disabled"
                         :show-search="showSearch"
                         :show-select-all="true"
-                        showSearch = true
                         :filter-option= "doSearch"
                         :list-style="resetTransferStyle"
                         @change="onChange"
@@ -98,7 +97,7 @@
                                 :columns="direction === 'left' ? leftColumns : rightColumns"
                                 :class="{ rightTable : direction === 'right'}"
                                 :data-source="filteredItems"
-                                size="small"
+                                size="default"
                                 :custom-row="
                                     ({ key, disabled: itemDisabled }) => ({
                                       onClick: () => {
@@ -121,11 +120,16 @@
 
 </template>
 
+
 <script>
 
     import { sendMessageToNode } from "@/RendererProcess/utilities";
 
-    import {computed, defineComponent, ref} from 'vue'
+    import {computed, defineComponent, ref, createVNode} from 'vue';
+
+    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+    import { message, Modal } from 'ant-design-vue';
+
     const { ipcRenderer } = window.require('electron');
 
     const originTargetKeys = [];
@@ -134,149 +138,56 @@
         {
             dataIndex: 'name',
             title: '名称',
+            width:300,
             resizable : true,
         },
         {
             dataIndex: 'costPerformance',
             title: '性价比',
             sorter: (a, b) => a.costPerformance - b.costPerformance,
-            resizable : true,
         },
         {
             dataIndex: 'historyPrices',
             title: 'buff历史价格',
             sorter: (a, b) => a.historyPrices - b.historyPrices,
-            resizable : true,
         },
         {
             dataIndex: 'cost',
             title: '成本',
             sorter: (a, b) => a.cost - b.cost,
-            resizable : true,
         },
         {
             dataIndex: 'steamPrice',
             title: 'steam价格',
             sorter: (a, b) => a.steamPrice - b.steamPrice,
-            resizable : true,
         },
         {
             dataIndex: 'difference',
             title: '差价',
             sorter: (a, b) => a.difference - b.difference,
-            resizable : true,
         },
         {
             dataIndex: 'buyNum',
             title: '销售量',
             sorter: (a, b) => a.buyNum - b.buyNum,
-            resizable : true,
         },
         {
             dataIndex: 'buffProfits',
             title: '预估利润',
             sorter: (a, b) => a.buffProfits - b.buffProfits,
-            resizable : true,
         },
     ];
     const rightTableColumns = [
         {
             dataIndex: 'name',
             title: '名称',
-            resizable : true,
         },
     ];
 
-
-
     export default defineComponent({
 
-        setup(props){
-
-            const actPage = ref(0);
-
-            /*--data transfer--*/
-            const targetKeys = ref(originTargetKeys);
-            const disabled = ref(false);
-            const showSearch = ref(false);
-            const leftColumns = ref(leftTableColumns);
-            const rightColumns = ref(rightTableColumns);
-
-            /*--buff--*/
-            const buffData = ref([]);
-            const serverStatus = ref("default");
-            const serverStatusText = ref("closed");
-            const serverStartTime = ref('');
-            const serverEndTime = ref('');
-
-            const onChange = (nextTargetKeys) => {
-                console.log('nextTargetKeys', nextTargetKeys);
-            };
-
-            const getRowSelection = ({
-                                         disabled,
-                                         selectedKeys,
-                                         onItemSelectAll,
-                                         onItemSelect,
-                                     }) => {
-                return {
-                    getCheckboxProps: (item) => ({
-                        disabled: disabled || item.disabled,
-                    }),
-                    onSelectAll(selected, selectedRows) {
-                        const treeSelectedKeys = selectedRows
-                            .filter(item => !item.disabled)
-                            .map(({ key }) => key);
-                        onItemSelectAll(treeSelectedKeys, selected);
-                    },
-                    onSelect({ key }, selected) {
-                        onItemSelect(key, selected);
-                    },
-                    selectedRowKeys: selectedKeys,
-                };
-            };
-
-
-            /*--buff--*/
-
-            const startBuffCrawler = async () =>{
-                let result = await sendMessageToNode('startBuffCrawler');
-
-            };
-
-            const getBuffCrawlerLog = () => {
-                sendMessageToNode('getBuffCrawlerLog');
-            }
-
-            return {
-                actPage,
-
-                targetKeys,
-                disabled,
-                showSearch,
-                leftColumns,
-                rightColumns,
-                onChange,
-                getRowSelection,
-
-                startBuffCrawler,
-                getBuffCrawlerLog,
-
-                buffData,
-                serverStatus,
-                serverStatusText,
-                serverStartTime,
-                serverEndTime
-            }
-
-        },
-
         mounted (){
-            ipcRenderer.on('buffCrawlerRunning', (e, payload) => {
-                this.serverStatus = "processing";
-                this.serverStatusText = "Running";
-                this.serverStartTime = new Date().toLocaleString();
-            })
+            
         },
 
         methods : {
@@ -288,7 +199,7 @@
                 }).then(msg => {
                     var msg = msg.data;
                     this.processBuffData(msg.data);
-                    alert(msg.message);
+                    message.success(msg.message);
                 }).catch(err => {
                     console.log(err);
                 })
@@ -330,6 +241,84 @@
         }
 
     })
+</script>
+
+<script setup>
+
+    const actPage = ref(0);
+
+    /*--data transfer--*/
+    const targetKeys = ref(originTargetKeys);
+    const disabled = ref(false);
+    const showSearch = ref(false);
+    const leftColumns = ref(leftTableColumns);
+    const rightColumns = ref(rightTableColumns);
+
+    /*--buff--*/
+    const buffData = ref([]);
+    const serverStatus = ref("default");
+    const serverStatusText = ref("closed");
+    const serverStartTime = ref('');
+    const serverEndTime = ref('');
+
+    const onChange = (nextTargetKeys) => {
+        console.log('nextTargetKeys', nextTargetKeys);
+    };
+
+    const getRowSelection = ({
+                                 disabled,
+                                 selectedKeys,
+                                 onItemSelectAll,
+                                 onItemSelect,
+                             }) => {
+        return {
+            getCheckboxProps: (item) => ({
+                disabled: disabled || item.disabled,
+            }),
+            onSelectAll(selected, selectedRows) {
+                const treeSelectedKeys = selectedRows
+                    .filter(item => !item.disabled)
+                    .map(({ key }) => key);
+                onItemSelectAll(treeSelectedKeys, selected);
+            },
+            onSelect({ key }, selected) {
+                onItemSelect(key, selected);
+            },
+            selectedRowKeys: selectedKeys,
+        };
+    };
+
+
+    /*--buff--*/
+
+    const startBuffCrawler = () =>{
+        Modal.confirm({
+            title: '是否确认打开服务?',
+            icon: createVNode(ExclamationCircleOutlined),
+            content: '该操作会在后台启动 pm2 buffCrawler 服务',
+            onOk() {
+                return new Promise((resolve, reject)=>{
+                    sendMessageToNode('startBuffCrawler');
+                    ipcRenderer.on('buffCrawlerRunning', (e, payload) => {
+                        serverStatus.value = "processing";
+                        serverStatusText.value = "Running";
+                        serverStartTime.value = new Date().toLocaleString();
+                        message.success("服务启动成功!");
+                        resolve();
+                    })
+                })
+            },
+
+            onCancel() {},
+        });
+
+    };
+
+    const getBuffCrawlerLog = () => {
+        sendMessageToNode('getBuffCrawlerLog');
+    }
+
+
 </script>
 
 <style scoped>
