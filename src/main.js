@@ -75,7 +75,8 @@ import {
     Badge,
     Transfer,
     Table,
-    Pagination
+    Pagination,
+    Space
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
@@ -89,7 +90,8 @@ const antComponents = [
     Badge,
     Transfer,
     Table,
-    Pagination
+    Pagination,
+    Space
 ];
 
 

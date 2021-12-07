@@ -20,8 +20,10 @@ export async function startBuffCrawler() {
         })
 
         console.log('result', result);
+        return result;
     }catch(e){
         console.log(e);
+        throw e;
     }
 }
 

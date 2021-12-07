@@ -10,23 +10,20 @@
 
             <section class="status-panel bg2">
 
-                <a-descriptions title="User Info" bordered>
-                    <a-descriptions-item label="Product">Cloud Database</a-descriptions-item>
-                    <a-descriptions-item label="Billing Mode">
-                        <a-button @click="startBuffCrawler()">启动</a-button>
+                <a-descriptions title="Server Info" bordered>
+                    <a-descriptions-item label="Product">Buff Crawler</a-descriptions-item>
+                    <a-descriptions-item label="Control Panel" :span="3">
+                        <a-space>
+                            <a-button @click="startBuffCrawler()">启动</a-button>
+                            <a-button @click="getBuffCrawlerLog()">获取打印日志</a-button>
+                        </a-space>
                     </a-descriptions-item>
-                    <a-descriptions-item label="Automatic Renewal">
-                        <a-button @click="getBuffCrawlerLog()">获取打印日志</a-button>
+                    <a-descriptions-item label="Status">
+                        <a-badge :status="serverStatus" :text="serverStatusText" />
                     </a-descriptions-item>
-                    <a-descriptions-item label="Order time">2018-04-24 18:00:00</a-descriptions-item>
-                    <a-descriptions-item label="Usage Time" :span="2">2019-04-24 18:00:00</a-descriptions-item>
-                    <a-descriptions-item label="Status" :span="3">
-                        <a-badge status="processing" text="Running" />
-                    </a-descriptions-item>
-                    <a-descriptions-item label="Negotiated Amount">$80.00</a-descriptions-item>
-                    <a-descriptions-item label="Discount">$20.00</a-descriptions-item>
-                    <a-descriptions-item label="Official Receipts">$60.00</a-descriptions-item>
-                    <a-descriptions-item label="Config Info">
+                    <a-descriptions-item label="Start time">{{serverStartTime}}</a-descriptions-item>
+                    <a-descriptions-item label="End Time">{{serverEndTime}}</a-descriptions-item>
+                    <a-descriptions-item label="Server Info">
                         Data disk type: MongoDB
                         <br />
                         Database version: 3.4
@@ -40,22 +37,27 @@
                         Region: East China 1
                         <br />
                     </a-descriptions-item>
+
                 </a-descriptions>
+
+
 
             </section>
 
             <section class="ctrlPanel bg2">
 
-                <a-button  @click="actBuff">BUFF爬虫启动！！</a-button>
-                <a-button  @click="actPageBuff()">BUFF启动从</a-button>
-                <a-input-number v-model:value="actPage"/>
-                <a-button  @click="stopBuff()">BUFF爬虫关闭！！</a-button>
-                <a-button  @click="gatherBuff()">启动BUFF数据汇总</a-button>
-                <a-button  @click="reverseBuff()">启动BUFF数据汇总(倒序)</a-button>
-                <a-button  @click="historyBuff()">启动BUFF历史数据加载</a-button>
-                <a-button  @click="actBuffHistoryPrices()">BUFF历史价格爬虫启动！！</a-button>
-                <a-button  @click="stopBuffHistoryPrices()">BUFF历史价格爬虫关闭！！</a-button>
-                <a-button  @click="clearBuff()">清除BUFF数据！！</a-button>
+                <a-space style="flex-wrap:wrap;">
+                    <a-button  @click="actBuff">BUFF爬虫启动！！</a-button>
+                    <a-button  @click="actPageBuff()">BUFF启动从</a-button>
+                    <a-input-number v-model:value="actPage"/>
+                    <a-button  @click="stopBuff()">BUFF爬虫关闭！！</a-button>
+                    <a-button  @click="gatherBuff()">启动BUFF数据汇总</a-button>
+                    <a-button  @click="reverseBuff()">启动BUFF数据汇总(倒序)</a-button>
+                    <a-button  @click="historyBuff()">启动BUFF历史数据加载</a-button>
+                    <a-button  @click="actBuffHistoryPrices()">BUFF历史价格爬虫启动！！</a-button>
+                    <a-button  @click="stopBuffHistoryPrices()">BUFF历史价格爬虫关闭！！</a-button>
+                    <a-button  @click="clearBuff()">清除BUFF数据！！</a-button>
+                </a-space>
 
             </section>
 
@@ -124,9 +126,7 @@
     import { sendMessageToNode } from "@/RendererProcess/utilities";
 
     import {computed, defineComponent, ref} from 'vue'
-
-    const buffData = ref([]);
-
+    const { ipcRenderer } = window.require('electron');
 
     const originTargetKeys = [];
 
@@ -202,6 +202,13 @@
             const leftColumns = ref(leftTableColumns);
             const rightColumns = ref(rightTableColumns);
 
+            /*--buff--*/
+            const buffData = ref([]);
+            const serverStatus = ref("default");
+            const serverStatusText = ref("closed");
+            const serverStartTime = ref('');
+            const serverEndTime = ref('');
+
             const onChange = (nextTargetKeys) => {
                 console.log('nextTargetKeys', nextTargetKeys);
             };
@@ -232,8 +239,9 @@
 
             /*--buff--*/
 
-            const startBuffCrawler = () =>{
-                sendMessageToNode('startBuffCrawler');
+            const startBuffCrawler = async () =>{
+                let result = await sendMessageToNode('startBuffCrawler');
+
             };
 
             const getBuffCrawlerLog = () => {
@@ -254,10 +262,21 @@
                 startBuffCrawler,
                 getBuffCrawlerLog,
 
-                buffData
-
+                buffData,
+                serverStatus,
+                serverStatusText,
+                serverStartTime,
+                serverEndTime
             }
 
+        },
+
+        mounted (){
+            ipcRenderer.on('buffCrawlerRunning', (e, payload) => {
+                this.serverStatus = "processing";
+                this.serverStatusText = "Running";
+                this.serverStartTime = new Date().toLocaleString();
+            })
         },
 
         methods : {
@@ -347,10 +366,6 @@
         padding:15px 25px;
         margin-bottom:10px;
         border-radius: 20px;
-    }
-
-    .ctrlPanel:deep(.ant-btn){
-        margin:6px 0;
     }
 
     .data-panel{

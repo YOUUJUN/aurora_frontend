@@ -71,7 +71,9 @@ async function createWindow() {
     /*---buffCrawler---*/
     ipcMain.on('startBuffCrawler', () => {
         console.log('let us start buff    ');
-        startBuffCrawler();
+        startBuffCrawler().then((res) => {
+            win.webContents.send('buffCrawlerRunning', res);
+        });
     });
 
     ipcMain.on('getBuffCrawlerLog', () => {
