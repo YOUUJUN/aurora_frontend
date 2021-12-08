@@ -1,28 +1,37 @@
 <template>
-
     <div class="BuffCrawler">
-
         <el-scrollbar>
-
             <section class="title bg2">
                 <h2>Buff Crawler</h2>
             </section>
 
             <section class="status-panel bg2">
-
                 <a-descriptions title="Server Info" bordered>
-                    <a-descriptions-item label="Product">Buff Crawler</a-descriptions-item>
+                    <a-descriptions-item label="Product"
+                        >Buff Crawler</a-descriptions-item
+                    >
                     <a-descriptions-item label="Control Panel" :span="2">
                         <a-space>
-                            <a-button @click="startBuffCrawler()">启动</a-button>
-                            <a-button @click="getBuffCrawlerLog()">获取打印日志</a-button>
+                            <a-button @click="startBuffCrawler()"
+                                >启动</a-button
+                            >
+                            <a-button @click="getBuffCrawlerLog()"
+                                >获取打印日志</a-button
+                            >
                         </a-space>
                     </a-descriptions-item>
                     <a-descriptions-item label="Status">
-                        <a-badge :status="serverStatus" :text="serverStatusText" />
+                        <a-badge
+                            :status="serverStatus"
+                            :text="serverStatusText"
+                        />
                     </a-descriptions-item>
-                    <a-descriptions-item label="Start time">{{serverStartTime}}</a-descriptions-item>
-                    <a-descriptions-item label="End Time">{{serverEndTime}}</a-descriptions-item>
+                    <a-descriptions-item label="Start time">{{
+                        serverStartTime
+                    }}</a-descriptions-item>
+                    <a-descriptions-item label="End Time">{{
+                        serverEndTime
+                    }}</a-descriptions-item>
                     <a-descriptions-item label="Server Info">
                         Data disk type: MongoDB
                         <br />
@@ -37,337 +46,465 @@
                         Region: East China 1
                         <br />
                     </a-descriptions-item>
-
                 </a-descriptions>
-
-
-
             </section>
 
             <section class="ctrlPanel bg2">
-
-                <a-space style="flex-wrap:wrap;">
-                    <a-button  @click="actBuff">BUFF爬虫启动！！</a-button>
-                    <a-button  @click="actPageBuff()">BUFF启动从</a-button>
-                    <a-input-number v-model:value="actPage"/>
-                    <a-button  @click="stopBuff()">BUFF爬虫关闭！！</a-button>
-                    <a-button  @click="gatherBuff()">启动BUFF数据汇总</a-button>
-                    <a-button  @click="reverseBuff()">启动BUFF数据汇总(倒序)</a-button>
-                    <a-button  @click="historyBuff()">启动BUFF历史数据加载</a-button>
-                    <a-button  @click="actBuffHistoryPrices()">BUFF历史价格爬虫启动！！</a-button>
-                    <a-button  @click="stopBuffHistoryPrices()">BUFF历史价格爬虫关闭！！</a-button>
-                    <a-button  @click="clearBuff()">清除BUFF数据！！</a-button>
+                <a-space style="flex-wrap: wrap">
+                    <a-button @click="confirmAction(actBuff)"
+                        >BUFF爬虫启动！！</a-button
+                    >
+                    <a-button @click="confirmAction(actPageBuff)"
+                        >BUFF启动从</a-button
+                    >
+                    <a-input-number v-model:value="actPage" />
+                    <a-button @click="confirmAction(stopBuff)">BUFF爬虫关闭！！</a-button>
+                    <a-button @click="confirmAction(gatherBuff)">启动BUFF数据汇总</a-button>
+                    <a-button @click="reverseBuff()"
+                        >启动BUFF数据汇总(倒序)</a-button
+                    >
+                    <a-button @click="confirmAction(historyBuff)"
+                        >启动BUFF历史数据加载</a-button
+                    >
+                    <a-button @click="confirmAction(actBuffHistoryPrices)"
+                        >BUFF历史价格爬虫启动！！</a-button
+                    >
+                    <a-button @click="confirmAction(stopBuffHistoryPrices)"
+                        >BUFF历史价格爬虫关闭！！</a-button
+                    >
+                    <a-button @click="confirmAction(clearBuff)">清除BUFF数据！！</a-button>
                 </a-space>
-
             </section>
 
             <section class="data-panel bg2">
-
-
                 <a-transfer
-                        v-model:target-keys="targetKeys"
-                        :data-source="buffData"
-                        :disabled="disabled"
-                        :show-search="showSearch"
-                        :show-select-all="true"
-                        :filter-option= "doSearch"
-                        :list-style="resetTransferStyle"
-                        @change="onChange"
+                    v-model:target-keys="targetKeys"
+                    :data-source="buffData"
+                    :disabled="disabled"
+                    :show-search="showSearch"
+                    :show-select-all="true"
+                    :filter-option="doSearch"
+                    :list-style="resetTransferStyle"
+                    @change="onChange"
                 >
                     <template
-                            #children="{
-                              direction,
-                              filteredItems,
-                              selectedKeys,
-                              disabled: listDisabled,
-                              onItemSelectAll,
-                              onItemSelect,
-                            }"
-                            class="ok"
+                        #children="{
+                            direction,
+                            filteredItems,
+                            selectedKeys,
+                            disabled: listDisabled,
+                            onItemSelectAll,
+                            onItemSelect,
+                        }"
+                        class="ok"
                     >
                         <a-table
-                                :row-selection="
-                                    getRowSelection({
-                                      disabled: listDisabled,
-                                      selectedKeys,
-                                      onItemSelectAll,
-                                      onItemSelect,
-                                    })
-                                  "
-                                :columns="direction === 'left' ? leftColumns : rightColumns"
-                                :class="{ rightTable : direction === 'right'}"
-                                :data-source="filteredItems"
-                                size="default"
-                                :custom-row="
-                                    ({ key, disabled: itemDisabled }) => ({
-                                      onClick: () => {
-                                        if (itemDisabled || listDisabled) return;
-                                        onItemSelect(key, !selectedKeys.includes(key));
-                                      },
-                                    })
-                                  "
+                            :row-selection="
+                                getRowSelection({
+                                    disabled: listDisabled,
+                                    selectedKeys,
+                                    onItemSelectAll,
+                                    onItemSelect,
+                                })
+                            "
+                            :columns="
+                                direction === 'left'
+                                    ? leftColumns
+                                    : rightColumns
+                            "
+                            :class="{ rightTable: direction === 'right' }"
+                            :data-source="filteredItems"
+                            size="default"
+                            :custom-row="
+                                ({ key, disabled: itemDisabled }) => ({
+                                    onClick: () => {
+                                        if (itemDisabled || listDisabled)
+                                            return;
+                                        onItemSelect(
+                                            key,
+                                            !selectedKeys.includes(key)
+                                        );
+                                    },
+                                })
+                            "
                         />
                     </template>
                 </a-transfer>
-
-
             </section>
-
         </el-scrollbar>
-
     </div>
-
-
 </template>
 
 
 <script>
+import { sendMessageToNode } from "@/RendererProcess/utilities";
+import { errorCaptured } from "@/RendererProcess/utilities/help";
 
-    import { sendMessageToNode } from "@/RendererProcess/utilities";
+import { computed, defineComponent, ref, createVNode } from "vue";
 
-    import {computed, defineComponent, ref, createVNode} from 'vue';
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { message, Modal } from "ant-design-vue";
 
-    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-    import { message, Modal } from 'ant-design-vue';
+const { ipcRenderer } = window.require("electron");
 
-    const { ipcRenderer } = window.require('electron');
+const originTargetKeys = [];
 
-    const originTargetKeys = [];
+const leftTableColumns = [
+    {
+        dataIndex: "name",
+        title: "名称",
+        width: 300,
+        resizable: true,
+    },
+    {
+        dataIndex: "costPerformance",
+        title: "性价比",
+        sorter: (a, b) => a.costPerformance - b.costPerformance,
+    },
+    {
+        dataIndex: "historyPrices",
+        title: "buff历史价格",
+        sorter: (a, b) => a.historyPrices - b.historyPrices,
+    },
+    {
+        dataIndex: "cost",
+        title: "成本",
+        sorter: (a, b) => a.cost - b.cost,
+    },
+    {
+        dataIndex: "steamPrice",
+        title: "steam价格",
+        sorter: (a, b) => a.steamPrice - b.steamPrice,
+    },
+    {
+        dataIndex: "difference",
+        title: "差价",
+        sorter: (a, b) => a.difference - b.difference,
+    },
+    {
+        dataIndex: "buyNum",
+        title: "销售量",
+        sorter: (a, b) => a.buyNum - b.buyNum,
+    },
+    {
+        dataIndex: "buffProfits",
+        title: "预估利润",
+        sorter: (a, b) => a.buffProfits - b.buffProfits,
+    },
+];
 
-    const leftTableColumns = [
-        {
-            dataIndex: 'name',
-            title: '名称',
-            width:300,
-            resizable : true,
-        },
-        {
-            dataIndex: 'costPerformance',
-            title: '性价比',
-            sorter: (a, b) => a.costPerformance - b.costPerformance,
-        },
-        {
-            dataIndex: 'historyPrices',
-            title: 'buff历史价格',
-            sorter: (a, b) => a.historyPrices - b.historyPrices,
-        },
-        {
-            dataIndex: 'cost',
-            title: '成本',
-            sorter: (a, b) => a.cost - b.cost,
-        },
-        {
-            dataIndex: 'steamPrice',
-            title: 'steam价格',
-            sorter: (a, b) => a.steamPrice - b.steamPrice,
-        },
-        {
-            dataIndex: 'difference',
-            title: '差价',
-            sorter: (a, b) => a.difference - b.difference,
-        },
-        {
-            dataIndex: 'buyNum',
-            title: '销售量',
-            sorter: (a, b) => a.buyNum - b.buyNum,
-        },
-        {
-            dataIndex: 'buffProfits',
-            title: '预估利润',
-            sorter: (a, b) => a.buffProfits - b.buffProfits,
-        },
-    ];
-    const rightTableColumns = [
-        {
-            dataIndex: 'name',
-            title: '名称',
-        },
-    ];
+const rightTableColumns = [
+    {
+        dataIndex: "name",
+        title: "名称",
+    },
+];
 
-    export default defineComponent({
+export default defineComponent({
+    mounted() {},
 
-        mounted (){
-            
-        },
-
-        methods : {
-
-            gatherBuff(){
-                this.$http2({
-                    url : "/gatherBuff",
-                    method: 'POST'
-                }).then(msg => {
-                    var msg = msg.data;
-                    this.processBuffData(msg.data);
-                    message.success(msg.message);
-                }).catch(err => {
-                    console.log(err);
-                })
-            },
-
-            processBuffData (buffData){
-                for (let i = 0; i < buffData.length; i++) {
-                    let data = buffData[i];
-                    this.buffData.push({
-                        key: i.toString(),
-                        name: data.name,
-                        costPerformance: data.costPerformance,
-                        historyPrices : data.historyPrices,
-                        cost : data.cost,
-                        steamPrice : data.steamPrice,
-                        difference : data.difference,
-                        buyNum : data.buyNum,
-                        buffProfits : data.buffProfits
-                    });
-                }
-            },
-
-            resetTransferStyle(params){
-                console.log('params', params)
-                if(params.direction === 'left'){
-                    return {
-                        "flex" : 1
-                    }
-                }else{
-                    return {
-                        "flex" : 0
-                    }
-                }
-            },
-
-            doSearch(inputValue, item){
-                return item.name.indexOf(inputValue) > -1;
+    methods: {
+        confirmAction(action) {
+            let title = "";
+            let funcName = action.name.split(" ").pop();
+            console.log('funcName', funcName);
+            switch (funcName) {
+                case "actBuff":
+                    title = "是否启动BUFF爬虫?";
+                    break;
+                case "actPageBuff":
+                    title = "是否启动BUFF爬虫?";
+                    break;
+                case "stopBuff":
+                    title = "是否关闭BUFF爬虫?";
+                    break;
+                case "gatherBuff":
+                    title = "是否创建BUFF数据汇总?";
+                    break;
+                case "historyBuff":
+                    title = "是否启动BUFF历史数据加载?";
+                    break;
+                case "actBuffHistoryPrices":
+                    title = "是否启动BUFF历史价格爬虫?";
+                    break;
+                case "stopBuffHistoryPrices":
+                    title = "是否关闭BUFF历史价格爬虫?";
+                    break;
+                case "clearBuff":
+                    title = "是否清除BUFF数据?";
+                    break;
             }
-        }
 
-    })
+            Modal.confirm({
+                title,
+                icon: createVNode(ExclamationCircleOutlined),
+                onOk() {
+                    return new Promise((resolve, reject) => {
+                        action().then(() => {
+                            resolve();
+                        });
+                    });
+                },
+
+                onCancel() {},
+            });
+        },
+
+        /*---buff service qpi---*/
+        async actBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/actBuff",
+                method: "POST",
+            });
+
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async actPageBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/actBuff",
+                method: "POST",
+                data: {
+                    page: this.actPage,
+                },
+            });
+
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async stopBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/stopBuff",
+                method: "POST",
+            });
+
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async clearBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/clearBuff",
+                method: "POST",
+            });
+
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async gatherBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/gatherBuff",
+                method: "POST",
+            })
+
+            if (msg) {
+                this.processBuffData(msg.data.data);
+                message.success(msg.data.message);
+            }
+        },
+
+        reverseBuff() {
+            if (this.buffGatherData.length === 0) {
+                this.gatherBuff();
+            }
+            this.buffGatherData.reverse();
+        },
+
+        async actBuffHistoryPrices() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/actBuffHistoryPrices",
+                method: "POST",
+            })
+            
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async stopBuffHistoryPrices() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/stopBuffHistoryPrices",
+                method: "POST",
+            })
+            
+            if (msg) {
+                message.success(msg.data.message);
+            }
+        },
+
+        async historyBuff() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/getBuffHistoryPrices",
+                method: "POST",
+            })
+            
+            if (msg) {
+                this.processBuffData(msg.data.data);
+                message.success(msg.data.message);
+            }
+        },
+
+        /*------*/
+        processBuffData(buffData) {
+            for (let i = 0; i < buffData.length; i++) {
+                let data = buffData[i];
+                this.buffData.push({
+                    key: i.toString(),
+                    name: data.name,
+                    costPerformance: data.costPerformance,
+                    historyPrices: data.historyPrices,
+                    cost: data.cost,
+                    steamPrice: data.steamPrice,
+                    difference: data.difference,
+                    buyNum: data.buyNum,
+                    buffProfits: data.buffProfits,
+                });
+            }
+        },
+
+        resetTransferStyle(params) {
+            console.log("params", params);
+            if (params.direction === "left") {
+                return {
+                    flex: 1,
+                };
+            } else {
+                return {
+                    flex: 0,
+                };
+            }
+        },
+
+        doSearch(inputValue, item) {
+            return item.name.indexOf(inputValue) > -1;
+        },
+    },
+});
 </script>
 
 <script setup>
+const actPage = ref(0);
 
-    const actPage = ref(0);
+/*--data transfer--*/
+const targetKeys = ref(originTargetKeys);
+const disabled = ref(false);
+const showSearch = ref(false);
+const leftColumns = ref(leftTableColumns);
+const rightColumns = ref(rightTableColumns);
 
-    /*--data transfer--*/
-    const targetKeys = ref(originTargetKeys);
-    const disabled = ref(false);
-    const showSearch = ref(false);
-    const leftColumns = ref(leftTableColumns);
-    const rightColumns = ref(rightTableColumns);
+/*--buff--*/
+const buffData = ref([]);
+const serverStatus = ref("default");
+const serverStatusText = ref("closed");
+const serverStartTime = ref("");
+const serverEndTime = ref("");
 
-    /*--buff--*/
-    const buffData = ref([]);
-    const serverStatus = ref("default");
-    const serverStatusText = ref("closed");
-    const serverStartTime = ref('');
-    const serverEndTime = ref('');
+const onChange = (nextTargetKeys) => {
+    console.log("nextTargetKeys", nextTargetKeys);
+};
 
-    const onChange = (nextTargetKeys) => {
-        console.log('nextTargetKeys', nextTargetKeys);
+const getRowSelection = ({
+    disabled,
+    selectedKeys,
+    onItemSelectAll,
+    onItemSelect,
+}) => {
+    return {
+        getCheckboxProps: (item) => ({
+            disabled: disabled || item.disabled,
+        }),
+        onSelectAll(selected, selectedRows) {
+            const treeSelectedKeys = selectedRows
+                .filter((item) => !item.disabled)
+                .map(({ key }) => key);
+            onItemSelectAll(treeSelectedKeys, selected);
+        },
+        onSelect({ key }, selected) {
+            onItemSelect(key, selected);
+        },
+        selectedRowKeys: selectedKeys,
     };
+};
 
-    const getRowSelection = ({
-                                 disabled,
-                                 selectedKeys,
-                                 onItemSelectAll,
-                                 onItemSelect,
-                             }) => {
-        return {
-            getCheckboxProps: (item) => ({
-                disabled: disabled || item.disabled,
-            }),
-            onSelectAll(selected, selectedRows) {
-                const treeSelectedKeys = selectedRows
-                    .filter(item => !item.disabled)
-                    .map(({ key }) => key);
-                onItemSelectAll(treeSelectedKeys, selected);
-            },
-            onSelect({ key }, selected) {
-                onItemSelect(key, selected);
-            },
-            selectedRowKeys: selectedKeys,
-        };
-    };
+/*--buff--*/
 
+const startBuffCrawler = () => {
+    Modal.confirm({
+        title: "是否确认打开服务?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "该操作会在后台启动 pm2 buffCrawler 服务",
+        onOk() {
+            return new Promise((resolve, reject) => {
+                sendMessageToNode("startBuffCrawler");
+                ipcRenderer.on("buffCrawlerRunning", (e, payload) => {
+                    serverStatus.value = "processing";
+                    serverStatusText.value = "Running";
+                    serverStartTime.value = new Date().toLocaleString();
+                    message.success("服务启动成功!");
+                    resolve();
+                });
+            });
+        },
 
-    /*--buff--*/
+        onCancel() {},
+    });
+};
 
-    const startBuffCrawler = () =>{
-        Modal.confirm({
-            title: '是否确认打开服务?',
-            icon: createVNode(ExclamationCircleOutlined),
-            content: '该操作会在后台启动 pm2 buffCrawler 服务',
-            onOk() {
-                return new Promise((resolve, reject)=>{
-                    sendMessageToNode('startBuffCrawler');
-                    ipcRenderer.on('buffCrawlerRunning', (e, payload) => {
-                        serverStatus.value = "processing";
-                        serverStatusText.value = "Running";
-                        serverStartTime.value = new Date().toLocaleString();
-                        message.success("服务启动成功!");
-                        resolve();
-                    })
-                })
-            },
-
-            onCancel() {},
-        });
-
-    };
-
-    const getBuffCrawlerLog = () => {
-        sendMessageToNode('getBuffCrawlerLog');
-    }
-
-
+const getBuffCrawlerLog = () => {
+    sendMessageToNode("getBuffCrawlerLog");
+};
 </script>
 
 <style scoped>
+.BuffCrawler {
+    border-radius: 20px;
+    height: 100%;
+    overflow: hidden;
+}
 
-    .BuffCrawler{
-        border-radius: 20px;
-        height: 100%;
-        overflow: hidden;
-    }
+.title {
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
 
-    .title{
-        padding:15px 25px;
-        margin-bottom:10px;
-        border-radius: 20px;
-    }
+.title h2 {
+    font-size: 18px;
+    margin: 0;
+}
 
-    .title h2{
-        font-size: 18px;
-        margin:0;
-    }
+.status-panel {
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
 
-    .status-panel{
-        padding:15px 25px;
-        margin-bottom:10px;
-        border-radius: 20px;
-    }
+.ctrlPanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
 
-    .ctrlPanel{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        align-items: center;
-        padding:15px 25px;
-        margin-bottom:10px;
-        border-radius: 20px;
-    }
+.data-panel {
+    padding: 15px;
+    border-radius: 20px;
+}
 
-    .data-panel{
-        padding:15px;
-        border-radius: 20px;
-    }
+/*--右边穿梭框--*/
 
-
-    /*--右边穿梭框--*/
-
-    .rightTable{
-        width: 400px;
-    }
-
-
+.rightTable {
+    width: 400px;
+}
 </style>
