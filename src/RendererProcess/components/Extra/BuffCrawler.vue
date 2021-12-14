@@ -137,7 +137,7 @@
                             <template #bodyCell="{ column, text, record }">
                                 <template
                                     v-if="
-                                        ['cost', 'steamPrice'].includes(
+                                        ['cost', 'selfBuyNum', 'steamPrice'].includes(
                                             column.dataIndex
                                         )
                                     "
@@ -283,6 +283,11 @@ const rightTableColumns = [
         dataIndex: "steamPrice",
         title: "steam价格",
         sorter: (a, b) => a.steamPrice - b.steamPrice,
+    },
+    {
+        dataIndex: "selfBuyNum",
+        title: "购买量",
+        sorter: (a, b) => a.selfBuyNum - b.selfBuyNum,
     },
     {
         dataIndex: "operation",
@@ -526,7 +531,7 @@ const actPage = ref(0);
 /*--data transfer--*/
 const targetKeys = ref(originTargetKeys);
 const disabled = ref(false);
-const showSearch = ref(false);
+const showSearch = ref(true);
 const leftColumns = ref(leftTableColumns);
 const rightColumns = ref(rightTableColumns);
 
@@ -560,9 +565,6 @@ const onChange = (nextTargetKeys, direction, moveKeys) => {
     for (let i = 0; i < nextTargetKeys.length; i++) {
         rightData.push(buffData._rawValue[nextTargetKeys[i]]);
     }
-    console.log("rightData", rightData);
-    console.log("direction", direction);
-    console.log("moveKeys", moveKeys);
 };
 
 const getRowSelection = ({
