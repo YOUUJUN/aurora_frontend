@@ -2,7 +2,7 @@ const Path = require('path');
 const util = require('util');
 const execFile = util.promisify(require('child_process').execFile);
 
-const buffCrawlerPath = Path.resolve("../../creeper2.0");
+const buffCrawlerPath = Path.resolve("../backend");
 
 export async function startBuffCrawler() {
     console.log('buffCrawlerPath', buffCrawlerPath);

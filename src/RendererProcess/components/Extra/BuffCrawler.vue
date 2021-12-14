@@ -58,8 +58,12 @@
                         >BUFF启动从</a-button
                     >
                     <a-input-number v-model:value="actPage" />
-                    <a-button @click="confirmAction(stopBuff)">BUFF爬虫关闭！！</a-button>
-                    <a-button @click="confirmAction(gatherBuff)">启动BUFF数据汇总</a-button>
+                    <a-button @click="confirmAction(stopBuff)"
+                        >BUFF爬虫关闭！！</a-button
+                    >
+                    <a-button @click="confirmAction(gatherBuff)"
+                        >启动BUFF数据汇总</a-button
+                    >
                     <a-button @click="reverseBuff()"
                         >启动BUFF数据汇总(倒序)</a-button
                     >
@@ -72,7 +76,9 @@
                     <a-button @click="confirmAction(stopBuffHistoryPrices)"
                         >BUFF历史价格爬虫关闭！！</a-button
                     >
-                    <a-button @click="confirmAction(clearBuff)">清除BUFF数据！！</a-button>
+                    <a-button @click="confirmAction(clearBuff)"
+                        >清除BUFF数据！！</a-button
+                    >
                 </a-space>
             </section>
 
@@ -128,6 +134,23 @@
                                 })
                             "
                         />
+                    </template>
+
+                    <template #footer="{ direction }">
+                        <a-button
+                            v-if="direction === 'right'"
+                            style="float: left; margin: 5px"
+                            @click="saveToSteam"
+                        >
+                            从Steam购买
+                        </a-button>
+                        <a-button
+                            v-if="direction === 'right'"
+                            style="float: left; margin: 5px"
+                            @click="saveToBuff"
+                        >
+                            从Buff购买
+                        </a-button>
                     </template>
                 </a-transfer>
             </section>
@@ -198,6 +221,16 @@ const rightTableColumns = [
         dataIndex: "name",
         title: "名称",
     },
+    {
+        dataIndex: "cost",
+        title: "成本",
+        sorter: (a, b) => a.cost - b.cost,
+    },
+    {
+        dataIndex: "steamPrice",
+        title: "steam价格",
+        sorter: (a, b) => a.steamPrice - b.steamPrice,
+    },
 ];
 
 export default defineComponent({
@@ -207,7 +240,6 @@ export default defineComponent({
         confirmAction(action) {
             let title = "";
             let funcName = action.name.split(" ").pop();
-            console.log('funcName', funcName);
             switch (funcName) {
                 case "actBuff":
                     title = "是否启动BUFF爬虫?";
@@ -302,7 +334,7 @@ export default defineComponent({
             let [err, msg] = await errorCaptured(this.$http2, {
                 url: "/gatherBuff",
                 method: "POST",
-            })
+            });
 
             if (msg) {
                 this.processBuffData(msg.data.data);
@@ -311,18 +343,18 @@ export default defineComponent({
         },
 
         reverseBuff() {
-            if (this.buffGatherData.length === 0) {
+            if (this.buffData.length === 0) {
                 this.gatherBuff();
             }
-            this.buffGatherData.reverse();
+            this.buffData.reverse();
         },
 
         async actBuffHistoryPrices() {
             let [err, msg] = await errorCaptured(this.$http2, {
                 url: "/actBuffHistoryPrices",
                 method: "POST",
-            })
-            
+            });
+
             if (msg) {
                 message.success(msg.data.message);
             }
@@ -332,8 +364,8 @@ export default defineComponent({
             let [err, msg] = await errorCaptured(this.$http2, {
                 url: "/stopBuffHistoryPrices",
                 method: "POST",
-            })
-            
+            });
+
             if (msg) {
                 message.success(msg.data.message);
             }
@@ -343,8 +375,8 @@ export default defineComponent({
             let [err, msg] = await errorCaptured(this.$http2, {
                 url: "/getBuffHistoryPrices",
                 method: "POST",
-            })
-            
+            });
+
             if (msg) {
                 this.processBuffData(msg.data.data);
                 message.success(msg.data.message);
@@ -385,6 +417,49 @@ export default defineComponent({
         doSearch(inputValue, item) {
             return item.name.indexOf(inputValue) > -1;
         },
+
+        /*---transfer footer---*/
+
+        async saveToSteam() {
+            let targetKeys = this.targetKeys;
+            console.log("targetKeys", targetKeys);
+            let buffData = this.buffData;
+            console.log("buffData", buffData);
+
+            if (!targetKeys) {
+                return;
+            }
+
+            let rightData = [];
+            for (let i = 0; i < targetKeys.length; i++) {
+                console.log(targetKeys[i]);
+                rightData.push(buffData[targetKeys[i]]);
+            }
+
+            console.log("rightData", rightData);
+
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/saveSteamPurchase",
+                method: "POST",
+                data: {
+                    goods: rightData,
+                    buy_time : new Date().getTime()
+                },
+            });
+
+            if (msg) {
+                console.log("msg", msg);
+            }
+
+            if (err) {
+                console.log("err", err);
+            }
+        },
+
+        saveToBuff() {},
+
+
+
     },
 });
 </script>
@@ -406,8 +481,16 @@ const serverStatusText = ref("closed");
 const serverStartTime = ref("");
 const serverEndTime = ref("");
 
-const onChange = (nextTargetKeys) => {
+const onChange = (nextTargetKeys, direction, moveKeys) => {
     console.log("nextTargetKeys", nextTargetKeys);
+    let rightData = [];
+    console.log("buffData", buffData);
+    for (let i = 0; i < nextTargetKeys.length; i++) {
+        rightData.push(buffData._rawValue[nextTargetKeys[i]]);
+    }
+    console.log("rightData", rightData);
+    console.log("direction", direction);
+    console.log("moveKeys", moveKeys);
 };
 
 const getRowSelection = ({
@@ -460,6 +543,11 @@ const startBuffCrawler = () => {
 const getBuffCrawlerLog = () => {
     sendMessageToNode("getBuffCrawlerLog");
 };
+
+defineExpose({
+    buffData,
+    targetKeys,
+});
 </script>
 
 <style scoped>
