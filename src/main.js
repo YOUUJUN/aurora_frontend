@@ -76,7 +76,8 @@ import {
     Transfer,
     Table,
     Pagination,
-    Space
+    Space,
+    Popconfirm
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
@@ -91,7 +92,8 @@ const antComponents = [
     Transfer,
     Table,
     Pagination,
-    Space
+    Space,
+    Popconfirm
 ];
 
 

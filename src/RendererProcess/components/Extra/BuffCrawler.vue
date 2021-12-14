@@ -133,7 +133,60 @@
                                     },
                                 })
                             "
-                        />
+                        >
+                            <template #bodyCell="{ column, text, record }">
+                                <template
+                                    v-if="
+                                        ['cost', 'steamPrice'].includes(
+                                            column.dataIndex
+                                        )
+                                    "
+                                >
+                                    <div>
+                                        <a-input
+                                            v-if="editableData[record.key]"
+                                            v-model:value="
+                                                editableData[record.key][
+                                                    column.dataIndex
+                                                ]
+                                            "
+                                            style="margin: -5px 0"
+                                        />
+                                        <template v-else>
+                                            {{ text }}
+                                        </template>
+                                    </div>
+                                </template>
+                                <template
+                                    v-else-if="column.dataIndex === 'operation'"
+                                >
+                                    <div class="editable-row-operations">
+                                        <a-space>
+                                            <span
+                                                v-if="editableData[record.key]"
+                                            >
+                                                <a @click="save(record.key)"
+                                                    >Save</a
+                                                >
+                                                <a-popconfirm
+                                                    title="Sure to cancel?"
+                                                    @confirm="
+                                                        cancel(record.key)
+                                                    "
+                                                >
+                                                    <a>Cancel</a>
+                                                </a-popconfirm>
+                                            </span>
+                                            <span v-else>
+                                                <a @click="edit(record.key)"
+                                                    >Edit</a
+                                                >
+                                            </span>
+                                        </a-space>
+                                    </div>
+                                </template>
+                            </template>
+                        </a-table>
                     </template>
 
                     <template #footer="{ direction }">
@@ -163,7 +216,7 @@
 import { sendMessageToNode } from "@/RendererProcess/utilities";
 import { errorCaptured } from "@/RendererProcess/utilities/help";
 
-import { computed, defineComponent, ref, createVNode } from "vue";
+import { computed, defineComponent, ref, reactive, createVNode } from "vue";
 
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
@@ -184,11 +237,11 @@ const leftTableColumns = [
         title: "性价比",
         sorter: (a, b) => a.costPerformance - b.costPerformance,
     },
-    {
-        dataIndex: "historyPrices",
-        title: "buff历史价格",
-        sorter: (a, b) => a.historyPrices - b.historyPrices,
-    },
+    // {
+    //     dataIndex: "historyPrices",
+    //     title: "buff历史价格",
+    //     sorter: (a, b) => a.historyPrices - b.historyPrices,
+    // },
     {
         dataIndex: "cost",
         title: "成本",
@@ -230,6 +283,10 @@ const rightTableColumns = [
         dataIndex: "steamPrice",
         title: "steam价格",
         sorter: (a, b) => a.steamPrice - b.steamPrice,
+    },
+    {
+        dataIndex: "operation",
+        title: "operation",
     },
 ];
 
@@ -390,13 +447,15 @@ export default defineComponent({
                 this.buffData.push({
                     key: i.toString(),
                     name: data.name,
-                    costPerformance: data.costPerformance,
-                    historyPrices: data.historyPrices,
-                    cost: data.cost,
-                    steamPrice: data.steamPrice,
-                    difference: data.difference,
+                    costPerformance: new Number(data.costPerformance).toFixed(
+                        2
+                    ),
+                    historyPrices: data.historyPrice,
+                    cost: new Number(data.cost).toFixed(2),
+                    steamPrice: new Number(data.steamPrice).toFixed(2),
+                    difference: new Number(data.difference).toFixed(2),
                     buyNum: data.buyNum,
-                    buffProfits: data.buffProfits,
+                    buffProfits: new Number(data.buffProfits).toFixed(2),
                 });
             }
         },
@@ -443,7 +502,7 @@ export default defineComponent({
                 method: "POST",
                 data: {
                     goods: rightData,
-                    buy_time : new Date().getTime()
+                    buy_time: new Date().getTime(),
                 },
             });
 
@@ -457,9 +516,6 @@ export default defineComponent({
         },
 
         saveToBuff() {},
-
-
-
     },
 });
 </script>
@@ -473,6 +529,22 @@ const disabled = ref(false);
 const showSearch = ref(false);
 const leftColumns = ref(leftTableColumns);
 const rightColumns = ref(rightTableColumns);
+
+/*--修改行--*/
+const editableData = reactive({});
+const edit = (key) => {
+    editableData[key] = buffData.value.filter((item) => key === item.key)[0];
+};
+const save = (key) => {
+    Object.assign(
+        buffData.value.filter((item) => key === item.key)[0],
+        editableData[key]
+    );
+    delete editableData[key];
+};
+const cancel = (key) => {
+    delete editableData[key];
+};
 
 /*--buff--*/
 const buffData = ref([]);
@@ -593,6 +665,6 @@ defineExpose({
 /*--右边穿梭框--*/
 
 .rightTable {
-    width: 400px;
+    width: 640px;
 }
 </style>
