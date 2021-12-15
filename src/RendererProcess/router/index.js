@@ -4,6 +4,7 @@ import UserCenter from '../components/Root/Player/UserCenter.vue'
 import CrawlerList from '../components/Root/Player/CrawlerList.vue'
 import Crawler from '../views/Crawler.vue'
 import BuffCrawler from '../components/Extra/BuffCrawler.vue'
+import PurchaseAnalyser from '../components/Extra/PurchaseAnalyser.vue'
 
 const routes = [
   {
@@ -29,6 +30,10 @@ const routes = [
       {
         path : 'BuffCrawler',
         component : BuffCrawler
+      },
+      {
+        path : 'PurchaseAnalyser',
+        component : PurchaseAnalyser
       }
     ]
   }

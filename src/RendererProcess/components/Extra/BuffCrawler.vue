@@ -79,6 +79,9 @@
                     <a-button @click="confirmAction(clearBuff)"
                         >清除BUFF数据！！</a-button
                     >
+                    <a-button @click="analysePurchase()"
+                        >分析订单</a-button
+                    >
                 </a-space>
             </section>
 
@@ -445,6 +448,13 @@ export default defineComponent({
             }
         },
 
+
+        analysePurchase(){
+            this.goTo('/Crawler/PurchaseAnalyser');
+        },
+
+
+
         /*------*/
         processBuffData(buffData) {
             for (let i = 0; i < buffData.length; i++) {
@@ -521,6 +531,14 @@ export default defineComponent({
         },
 
         saveToBuff() {},
+
+
+
+
+
+        goTo (target){
+            this.$router.push(target);
+        },
     },
 });
 </script>

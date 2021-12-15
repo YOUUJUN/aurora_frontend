@@ -77,7 +77,12 @@ import {
     Table,
     Pagination,
     Space,
-    Popconfirm
+    Popconfirm,
+    Divider,
+    Tabs,
+    TabPane,
+    Breadcrumb,
+    PageHeader
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
@@ -93,7 +98,12 @@ const antComponents = [
     Table,
     Pagination,
     Space,
-    Popconfirm
+    Popconfirm,
+    Divider,
+    Tabs,
+    TabPane,
+    Breadcrumb,
+    PageHeader
 ];
 
 
