@@ -1,4 +1,5 @@
 <template>
+    
     <div class="BuffCrawler">
         <el-scrollbar>
             <section class="title bg2">
@@ -212,6 +213,7 @@
             </section>
         </el-scrollbar>
     </div>
+    
 </template>
 
 
@@ -496,9 +498,7 @@ export default defineComponent({
 
         async saveToSteam() {
             let targetKeys = this.targetKeys;
-            console.log("targetKeys", targetKeys);
             let buffData = this.buffData;
-            console.log("buffData", buffData);
 
             if (!targetKeys) {
                 return;
@@ -522,7 +522,11 @@ export default defineComponent({
             });
 
             if (msg) {
-                console.log("msg", msg);
+                if(msg.data.status == 1){
+                    message.success(msg.data.message);
+                }else{
+                    message.error(msg.data.message);
+                }
             }
 
             if (err) {
@@ -530,7 +534,45 @@ export default defineComponent({
             }
         },
 
-        saveToBuff() {},
+        async saveToBuff() {
+
+            let targetKeys = this.targetKeys;
+            let buffData = this.buffData;
+
+            if (!targetKeys) {
+                return;
+            }
+
+            let rightData = [];
+            for (let i = 0; i < targetKeys.length; i++) {
+                rightData.push(buffData[targetKeys[i]]);
+            }
+
+            console.log("rightData", rightData);
+
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/saveBufffPurchase",
+                method: "POST",
+                data: {
+                    goods: rightData,
+                    buy_time: new Date().getTime(),
+                },
+            });
+
+            if (msg) {
+                if(msg.data.status == 1){
+                    message.success(msg.data.message);
+                }else{
+                    message.error(msg.data.message);
+                }
+            }
+
+            if (err) {
+                console.log("err", err);
+            }
+
+
+        },
 
 
 

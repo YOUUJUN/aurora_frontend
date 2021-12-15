@@ -2,7 +2,18 @@
 
     <div class="Crawler">
 
-        <router-view/>
+        <router-view  v-slot="{ Component }">
+
+            <keep-alive v-if="$route.meta.keepAlive">
+                <component :is="Component" />
+            </keep-alive>
+
+            <template v-if="!$route.meta.keepAlive">
+                <component v-if="!$route.meta.keepAlive" :is="Component" />
+            </template>
+            
+
+        </router-view>
 
     </div>
 

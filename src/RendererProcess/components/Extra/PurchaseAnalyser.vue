@@ -45,7 +45,6 @@
                                         <a-divider type="vertical" />
                                         <a class="ant-dropdown-link">
                                             More actions
-                                            <down-outlined />
                                         </a>
                                     </span>
                                 </template>
@@ -53,12 +52,39 @@
                         </a-table>
                     </section>
                 </a-tab-pane>
-                <a-tab-pane key="2" tab="Buff Purchases" force-render
-                    >Content of Tab Pane 2</a-tab-pane
-                >
-                <a-tab-pane key="3" tab="Tab 3"
-                    >Content of Tab Pane 3</a-tab-pane
-                >
+                <a-tab-pane key="2" tab="Buff Purchases" force-render>
+
+                    <section class="ctrlPanel bg2">
+                        <a-space align="start">
+                            <a-button @click="getBuffPurchases()"
+                                >获取Buff订单信息</a-button
+                            >
+                        </a-space>
+                    </section>
+
+                    <section class="data-panel bg2">
+                        <a-table
+                            :columns="columns"
+                            :data-source="buffPurchaseData"
+                        >
+                            <template #bodyCell="{ column, record }">
+                                <template v-if="column.key === 'action'">
+                                    <span>
+                                        <a>Invite 一 {{ record.name }}</a>
+                                        <a-divider type="vertical" />
+                                        <a>Delete</a>
+                                        <a-divider type="vertical" />
+                                        <a class="ant-dropdown-link">
+                                            More actions
+                                        </a>
+                                    </span>
+                                </template>
+                            </template>
+                        </a-table>
+                    </section>
+
+                </a-tab-pane>
+    
             </a-tabs>
         </el-scrollbar>
     </div>
@@ -82,6 +108,19 @@ export default defineComponent({
             if (msg) {
                 console.log("msg", msg);
                 this.steamPurchaseData = this.processData(msg.data.data);
+                message.success(msg.data.message);
+            }
+        },
+
+        async getBuffPurchases() {
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/getBuffPurchases",
+                method: "POST",
+            });
+
+            if (msg) {
+                console.log("msg", msg);
+                this.buffPurchaseData = this.processData(msg.data.data);
                 message.success(msg.data.message);
             }
         },
@@ -174,6 +213,7 @@ const columns = [
 ];
 
 const steamPurchaseData = ref([]);
+const buffPurchaseData = ref([]);
 
 const doSearch = (inputValue, item) => {
     return item.name.indexOf(inputValue) > -1;
@@ -181,6 +221,7 @@ const doSearch = (inputValue, item) => {
 
 defineExpose({
     steamPurchaseData,
+    buffPurchaseData
 });
 </script>
 
