@@ -13,8 +13,17 @@
                     >
                     <a-descriptions-item label="Control Panel" :span="2">
                         <a-space>
-                            <a-button @click="startBuffCrawler()"
-                                >启动</a-button
+                            <a-button @click="startBuffCrawler('dev')"
+                                >启动DEV</a-button
+                            >
+                            <a-button @click="startBuffCrawler('prd')"
+                                >启动PRD</a-button
+                            >
+                            <a-button @click="stopBuffCrawler()"
+                                >关闭</a-button
+                            >
+                            <a-button @click="reStartBuffCrawler()"
+                                >重启</a-button
                             >
                             <a-button @click="getBuffCrawlerLog()"
                                 >获取打印日志</a-button
@@ -33,6 +42,20 @@
                     <a-descriptions-item label="End Time">{{
                         serverEndTime
                     }}</a-descriptions-item>
+                    <a-descriptions-item label="Latest Token" :span="3">
+
+                        <a-input-search
+                        v-model:value="tokenInfo"
+                        placeholder="input latest token"
+                        size="large"
+                        @search="upDateLogInfo"
+                        >
+                        <template #enterButton>
+                            <a-button>更新</a-button>
+                        </template>
+                        </a-input-search>
+
+                    </a-descriptions-item>
                     <a-descriptions-item label="Server Info">
                         Data disk type: MongoDB
                         <br />
@@ -575,7 +598,31 @@ export default defineComponent({
         },
 
 
+        /*---updateToken---*/
+        async upDateLogInfo(){
+            let token = this.tokenInfo.trim();
+            let [err, msg] = await errorCaptured(this.$http2, {
+                url: "/updateLogInfo",
+                method: "POST",
+                data: {
+                    token,
+                },
+            });
 
+            if (msg) {
+                if(msg.data.status == 1){
+                    message.success(msg.data.message);
+                }else{
+                    message.error(msg.data.message);
+                }
+            }
+
+            if (err) {
+                console.log("err", err);
+            }
+
+
+        },
 
 
         goTo (target){
@@ -587,6 +634,7 @@ export default defineComponent({
 
 <script setup>
 const actPage = ref(0);
+const tokenInfo = ref("");
 
 /*--data transfer--*/
 const targetKeys = ref(originTargetKeys);
@@ -652,14 +700,20 @@ const getRowSelection = ({
 
 /*--buff--*/
 
-const startBuffCrawler = () => {
+const startBuffCrawler = (info) => {
+    let command = "";
+    if(info === 'dev'){
+        command = "startDevBuffCrawler"
+    }else if(info === 'prd'){
+        command = "startPrdBuffCrawler"
+    }
     Modal.confirm({
         title: "是否确认打开服务?",
         icon: createVNode(ExclamationCircleOutlined),
         content: "该操作会在后台启动 pm2 buffCrawler 服务",
         onOk() {
             return new Promise((resolve, reject) => {
-                sendMessageToNode("startBuffCrawler");
+                sendMessageToNode(command);
                 ipcRenderer.on("buffCrawlerRunning", (e, payload) => {
                     serverStatus.value = "processing";
                     serverStatusText.value = "Running";
@@ -674,11 +728,42 @@ const startBuffCrawler = () => {
     });
 };
 
+const stopBuffCrawler = () => {
+    Modal.confirm({
+        title: "是否确认关闭服务?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "该操作会关闭后台 pm2 buffCrawler 服务",
+        onOk() {
+            return new Promise((resolve, reject) => {
+                sendMessageToNode("stopBuffCrawler");
+            });
+        },
+
+        onCancel() {},
+    });
+};
+
+const reStartBuffCrawler = () => {
+    Modal.confirm({
+        title: "是否确认重启服务?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "该操作会重启后台 pm2 buffCrawler 服务",
+        onOk() {
+            return new Promise((resolve, reject) => {
+                sendMessageToNode("reStartBuffCrawler");
+            });
+        },
+
+        onCancel() {},
+    });
+};
+
 const getBuffCrawlerLog = () => {
     sendMessageToNode("getBuffCrawlerLog");
 };
 
 defineExpose({
+    tokenInfo,
     buffData,
     targetKeys,
 });
