@@ -66,11 +66,17 @@ async function createWindow() {
         win.close();
     });
 
+
+
     /*---buffCrawler---*/
     ipcMain.on("startDevBuffCrawler", () => {
         console.log("let us start buff crawler dev");
         startDevBuffCrawler().then((res) => {
             win.webContents.send("buffCrawlerRunning", res);
+        }).catch(err => {
+            win.webContents.send("startBuffCrawlerFailed", err);
+        }).finally(() =>{
+            win.webContents.send("startBuffCrawlerDone");
         });
     });
 
@@ -78,13 +84,21 @@ async function createWindow() {
         console.log("let us start buff crawler prd");
         startPrdBuffCrawler().then((res) => {
             win.webContents.send("buffCrawlerRunning", res);
+        }).catch(err => {
+            win.webContents.send("startBuffCrawlerFailed", err);
+        }).finally(() =>{
+            win.webContents.send("startBuffCrawlerDone");
         });
     });
 
     ipcMain.on("stopBuffCrawler", () => {
         console.log("let us stop buff crawler");
         stopBuffCrawler().then((res) => {
-            win.webContents.send("buffCrawlerRunning", res);
+            win.webContents.send("buffCrawlerClosing", res);
+        }).catch(err => {
+            win.webContents.send("stopBuffCrawlerFailed", err);
+        }).finally(() =>{
+            win.webContents.send("stopBuffCrawlerDone");
         });
     });
 
@@ -92,6 +106,10 @@ async function createWindow() {
         console.log("let us restart buff crawler");
         restartBuffCrawler().then((res) => {
             win.webContents.send("buffCrawlerRunning", res);
+        }).catch(err => {
+            win.webContents.send("startBuffCrawlerFailed", err);
+        }).finally(() =>{
+            win.webContents.send("startBuffCrawlerDone");
         });
     });
 

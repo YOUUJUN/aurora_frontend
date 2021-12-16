@@ -1,5 +1,4 @@
 <template>
-    
     <div class="BuffCrawler">
         <el-scrollbar>
             <section class="title bg2">
@@ -19,9 +18,7 @@
                             <a-button @click="startBuffCrawler('prd')"
                                 >启动PRD</a-button
                             >
-                            <a-button @click="stopBuffCrawler()"
-                                >关闭</a-button
-                            >
+                            <a-button @click="stopBuffCrawler()">关闭</a-button>
                             <a-button @click="reStartBuffCrawler()"
                                 >重启</a-button
                             >
@@ -43,18 +40,16 @@
                         serverEndTime
                     }}</a-descriptions-item>
                     <a-descriptions-item label="Latest Token" :span="3">
-
                         <a-input-search
-                        v-model:value="tokenInfo"
-                        placeholder="input latest token"
-                        size="large"
-                        @search="upDateLogInfo"
+                            v-model:value="tokenInfo"
+                            placeholder="input latest token"
+                            size="large"
+                            @search="upDateLogInfo"
                         >
-                        <template #enterButton>
-                            <a-button>更新</a-button>
-                        </template>
+                            <template #enterButton>
+                                <a-button>更新</a-button>
+                            </template>
                         </a-input-search>
-
                     </a-descriptions-item>
                     <a-descriptions-item label="Server Info">
                         Data disk type: MongoDB
@@ -81,7 +76,14 @@
                     <a-button @click="confirmAction(actPageBuff)"
                         >BUFF启动从</a-button
                     >
-                    <a-input-number v-model:value="actPage" />
+                    <a-input-number 
+                    v-model:value="actPage"
+                    addon-before="页数从"
+                     />
+                     <a-input-number 
+                    v-model:value="endPage"
+                    addon-before="页数到"
+                     />
                     <a-button @click="confirmAction(stopBuff)"
                         >BUFF爬虫关闭！！</a-button
                     >
@@ -103,9 +105,7 @@
                     <a-button @click="confirmAction(clearBuff)"
                         >清除BUFF数据！！</a-button
                     >
-                    <a-button @click="analysePurchase()"
-                        >分析订单</a-button
-                    >
+                    <a-button @click="analysePurchase()">分析订单</a-button>
                 </a-space>
             </section>
 
@@ -164,9 +164,11 @@
                             <template #bodyCell="{ column, text, record }">
                                 <template
                                     v-if="
-                                        ['cost', 'selfBuyNum', 'steamPrice'].includes(
-                                            column.dataIndex
-                                        )
+                                        [
+                                            'cost',
+                                            'selfBuyNum',
+                                            'steamPrice',
+                                        ].includes(column.dataIndex)
                                     "
                                 >
                                     <div>
@@ -236,7 +238,6 @@
             </section>
         </el-scrollbar>
     </div>
-    
 </template>
 
 
@@ -250,6 +251,8 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 
 const { ipcRenderer } = window.require("electron");
+
+const {EventEmitter} =  window.require('events');
 
 const originTargetKeys = [];
 
@@ -389,7 +392,8 @@ export default defineComponent({
                 url: "/actBuff",
                 method: "POST",
                 data: {
-                    page: this.actPage,
+                    startPage: this.actPage,
+                    endPage : this.endPage
                 },
             });
 
@@ -473,12 +477,9 @@ export default defineComponent({
             }
         },
 
-
-        analysePurchase(){
-            this.goTo('/Crawler/PurchaseAnalyser');
+        analysePurchase() {
+            this.goTo("/Crawler/PurchaseAnalyser");
         },
-
-
 
         /*------*/
         processBuffData(buffData) {
@@ -545,9 +546,9 @@ export default defineComponent({
             });
 
             if (msg) {
-                if(msg.data.status == 1){
+                if (msg.data.status == 1) {
                     message.success(msg.data.message);
-                }else{
+                } else {
                     message.error(msg.data.message);
                 }
             }
@@ -558,7 +559,6 @@ export default defineComponent({
         },
 
         async saveToBuff() {
-
             let targetKeys = this.targetKeys;
             let buffData = this.buffData;
 
@@ -583,9 +583,9 @@ export default defineComponent({
             });
 
             if (msg) {
-                if(msg.data.status == 1){
+                if (msg.data.status == 1) {
                     message.success(msg.data.message);
-                }else{
+                } else {
                     message.error(msg.data.message);
                 }
             }
@@ -593,13 +593,10 @@ export default defineComponent({
             if (err) {
                 console.log("err", err);
             }
-
-
         },
 
-
         /*---updateToken---*/
-        async upDateLogInfo(){
+        async upDateLogInfo() {
             let token = this.tokenInfo.trim();
             let [err, msg] = await errorCaptured(this.$http2, {
                 url: "/updateLogInfo",
@@ -610,9 +607,9 @@ export default defineComponent({
             });
 
             if (msg) {
-                if(msg.data.status == 1){
+                if (msg.data.status == 1) {
                     message.success(msg.data.message);
-                }else{
+                } else {
                     message.error(msg.data.message);
                 }
             }
@@ -620,12 +617,9 @@ export default defineComponent({
             if (err) {
                 console.log("err", err);
             }
-
-
         },
 
-
-        goTo (target){
+        goTo(target) {
             this.$router.push(target);
         },
     },
@@ -633,7 +627,11 @@ export default defineComponent({
 </script>
 
 <script setup>
-const actPage = ref(0);
+import { onMounted } from "vue";
+const myEE = new EventEmitter();
+
+const actPage = ref(1);
+const endPage = ref(2);
 const tokenInfo = ref("");
 
 /*--data transfer--*/
@@ -665,6 +663,7 @@ const serverStatus = ref("default");
 const serverStatusText = ref("closed");
 const serverStartTime = ref("");
 const serverEndTime = ref("");
+
 
 const onChange = (nextTargetKeys, direction, moveKeys) => {
     console.log("nextTargetKeys", nextTargetKeys);
@@ -700,12 +699,27 @@ const getRowSelection = ({
 
 /*--buff--*/
 
+ipcRenderer.on("buffCrawlerRunning", (e, payload) => {
+    console.log('im in!!!!!!!!!!!!!!!!!!!!!!!');
+    serverStatus.value = "processing";
+    serverStatusText.value = "Running";
+    serverStartTime.value = new Date().toLocaleString();
+    message.success("服务启动成功!");
+});
+
+ipcRenderer.on("buffCrawlerClosing", (e, payload) => {
+    serverStatus.value = "default";
+    serverStatusText.value = "closed";
+    serverEndTime.value = new Date().toLocaleString();
+    message.success("服务关闭成功!");
+});
+
 const startBuffCrawler = (info) => {
     let command = "";
-    if(info === 'dev'){
-        command = "startDevBuffCrawler"
-    }else if(info === 'prd'){
-        command = "startPrdBuffCrawler"
+    if (info === "dev") {
+        command = "startDevBuffCrawler";
+    } else if (info === "prd") {
+        command = "startPrdBuffCrawler";
     }
     Modal.confirm({
         title: "是否确认打开服务?",
@@ -713,14 +727,15 @@ const startBuffCrawler = (info) => {
         content: "该操作会在后台启动 pm2 buffCrawler 服务",
         onOk() {
             return new Promise((resolve, reject) => {
+                console.log('-------------------lalalalalla');
                 sendMessageToNode(command);
-                ipcRenderer.on("buffCrawlerRunning", (e, payload) => {
-                    serverStatus.value = "processing";
-                    serverStatusText.value = "Running";
-                    serverStartTime.value = new Date().toLocaleString();
-                    message.success("服务启动成功!");
+                ipcRenderer.on("startBuffCrawlerFailed", (e, payload) => {
+                    message.error("服务启动失败!");
+                    reject();
+                })
+                ipcRenderer.on("startBuffCrawlerDone", (e, payload) => {
                     resolve();
-                });
+                })
             });
         },
 
@@ -736,6 +751,13 @@ const stopBuffCrawler = () => {
         onOk() {
             return new Promise((resolve, reject) => {
                 sendMessageToNode("stopBuffCrawler");
+                ipcRenderer.once("stopBuffCrawlerFailed", (e, payload) => {
+                    message.error("服务启动失败!");
+                    reject();
+                })
+                ipcRenderer.once("stopBuffCrawlerDone", (e, payload) => {
+                    resolve();
+                })
             });
         },
 
@@ -751,6 +773,13 @@ const reStartBuffCrawler = () => {
         onOk() {
             return new Promise((resolve, reject) => {
                 sendMessageToNode("reStartBuffCrawler");
+                ipcRenderer.once("startBuffCrawlerFailed", (e, payload) => {
+                    message.error("服务启动失败!");
+                    reject();
+                })
+                ipcRenderer.once("startBuffCrawlerDone", (e, payload) => {
+                    resolve();
+                })
             });
         },
 

@@ -48,7 +48,7 @@ export async function startPrdBuffCrawler() {
 
 export async function stopBuffCrawler() {
     try {
-        let result = await execFile("pm2 kill 0", {
+        let result = await execFile("pm2 stop aurora", {
             windowsHide: false,
             cwd: buffCrawlerPath,
             shell: true,
@@ -64,7 +64,7 @@ export async function stopBuffCrawler() {
 
 export async function restartBuffCrawler() {
     try {
-        let result = await execFile("pm2 restart 0", {
+        let result = await execFile("pm2 restart aurora", {
             windowsHide: false,
             cwd: buffCrawlerPath,
             shell: true,
@@ -80,9 +80,8 @@ export async function restartBuffCrawler() {
 
 
 export async function getBuffCrawlerLog() {
-    console.log("get in");
     try {
-        let logs = await execFile("start cmd.exe /K pm2 logs", {
+        let logs = await execFile("start cmd.exe /K pm2 log aurora", {
             windowsHide: false,
             cwd: buffCrawlerPath,
             shell: true,
