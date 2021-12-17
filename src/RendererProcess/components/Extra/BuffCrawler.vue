@@ -79,10 +79,16 @@
                     <a-input-number 
                     v-model:value="actPage"
                     addon-before="页数从"
+                    min=1
+                    step=150
+                    max=910
                      />
                      <a-input-number 
                     v-model:value="endPage"
                     addon-before="页数到"
+                    min=2
+                    step=150
+                    max=910
                      />
                     <a-button @click="confirmAction(stopBuff)"
                         >BUFF爬虫关闭！！</a-button
