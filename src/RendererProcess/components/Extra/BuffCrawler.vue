@@ -257,8 +257,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 
 const { ipcRenderer } = window.require("electron");
-
-const {EventEmitter} =  window.require('events');
+import { io } from "socket.io-client";
 
 const originTargetKeys = [];
 
@@ -333,7 +332,15 @@ const rightTableColumns = [
 ];
 
 export default defineComponent({
-    mounted() {},
+    data(){
+        return {
+
+        }
+    },
+
+    mounted() {
+        
+    },
 
     methods: {
         confirmAction(action) {
@@ -634,7 +641,6 @@ export default defineComponent({
 
 <script setup>
 import { onMounted } from "vue";
-const myEE = new EventEmitter();
 
 const actPage = ref(1);
 const endPage = ref(2);
@@ -720,6 +726,8 @@ ipcRenderer.on("buffCrawlerClosing", (e, payload) => {
     message.success("服务关闭成功!");
 });
 
+let socket =  ref(null);
+
 const startBuffCrawler = (info) => {
     let command = "";
     if (info === "dev") {
@@ -735,12 +743,16 @@ const startBuffCrawler = (info) => {
             return new Promise((resolve, reject) => {
                 console.log('-------------------lalalalalla');
                 sendMessageToNode(command);
-                ipcRenderer.on("startBuffCrawlerFailed", (e, payload) => {
+
+                ipcRenderer.once("startBuffCrawlerFailed", (e, payload) => {
                     message.error("服务启动失败!");
                     reject();
                 })
-                ipcRenderer.on("startBuffCrawlerDone", (e, payload) => {
+                ipcRenderer.once("startBuffCrawlerDone", (e, payload) => {
                     resolve();
+                    setTimeout(() => {
+                        connectSocket();
+                    },10000)
                 })
             });
         },
@@ -785,6 +797,9 @@ const reStartBuffCrawler = () => {
                 })
                 ipcRenderer.once("startBuffCrawlerDone", (e, payload) => {
                     resolve();
+                    setTimeout(() => {
+                        connectSocket();
+                    },10000)
                 })
             });
         },
@@ -793,11 +808,24 @@ const reStartBuffCrawler = () => {
     });
 };
 
+const connectSocket = () =>{
+    console.log('connecting socket server=====>');
+    if(socket.value){
+        return socket;
+    }
+
+    socket = io.connect('ws://localhost:8888/');
+
+    return socket;
+}
+
+
 const getBuffCrawlerLog = () => {
     sendMessageToNode("getBuffCrawlerLog");
 };
 
 defineExpose({
+    socket,
     tokenInfo,
     buffData,
     targetKeys,

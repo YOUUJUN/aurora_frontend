@@ -74,6 +74,7 @@
 
 <script>
     import { defineComponent } from 'vue'
+    import { io } from "socket.io-client";
 
     export default defineComponent({
         setup() {
@@ -83,6 +84,7 @@
             const handleClose = (key, keyPath) => {
                 console.log(key, keyPath)
             }
+
             return {
                 handleOpen,
                 handleClose,
@@ -96,11 +98,17 @@
             },
 
              testPost() {
-                console.log('this', this.$http);
+
+            
+                
+
                 this.$http({
                     url : '/test',
                 }).then((res)=>{
                     console.log('res', res);
+
+
+
                 })
             }
         }
