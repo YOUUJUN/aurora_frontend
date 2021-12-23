@@ -53,7 +53,6 @@
                     </section>
                 </a-tab-pane>
                 <a-tab-pane key="2" tab="Buff Purchases" force-render>
-
                     <section class="ctrlPanel bg2">
                         <a-space align="start">
                             <a-button @click="getBuffPurchases()"
@@ -82,9 +81,7 @@
                             </template>
                         </a-table>
                     </section>
-
                 </a-tab-pane>
-    
             </a-tabs>
         </el-scrollbar>
     </div>
@@ -144,9 +141,9 @@ export default defineComponent({
             return newData;
         },
 
-        goBack(){
+        goBack() {
             this.$router.back();
-        }
+        },
     },
 });
 </script>
@@ -177,7 +174,6 @@ const routes = ref([
             },
         ],
     },
-    
 ]);
 
 const tabActiveKey = ref("1");
@@ -221,7 +217,7 @@ const doSearch = (inputValue, item) => {
 
 defineExpose({
     steamPurchaseData,
-    buffPurchaseData
+    buffPurchaseData,
 });
 </script>
 

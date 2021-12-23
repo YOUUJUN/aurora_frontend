@@ -70,9 +70,9 @@
 
             <section class="ctrlPanel bg2">
                 <a-space style="flex-wrap: wrap">
-                    <a-button @click="confirmAction(actBuff)"
+                    <!-- <a-button @click="confirmAction(actBuff)"
                         >BUFF爬虫启动！！</a-button
-                    >
+                    > -->
                     <a-button @click="confirmAction(actPageBuff)"
                         >BUFF启动从</a-button
                     >
@@ -258,6 +258,7 @@ import { message, Modal } from "ant-design-vue";
 
 const { ipcRenderer } = window.require("electron");
 import { io } from "socket.io-client";
+const wsUrl = "ws://localhost:8888/";
 
 const originTargetKeys = [];
 
@@ -395,6 +396,7 @@ export default defineComponent({
                 method: "POST",
             });
 
+
             if (msg) {
                 message.success(msg.data.message);
             }
@@ -409,6 +411,15 @@ export default defineComponent({
                     endPage : this.endPage
                 },
             });
+
+            let socket = io(wsUrl);
+            socket.once('endLoop', (payload) => {
+                // console.log('payload', payload);
+                // new Notification(`通知！！！`, { 
+                //     body: `本次循环任务已经完成！` 
+                // });   
+                sendMessageToNode("notifyLoopEnd");
+            })
 
             if (msg) {
                 message.success(msg.data.message);

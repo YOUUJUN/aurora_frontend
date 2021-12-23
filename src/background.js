@@ -9,7 +9,8 @@ import {
     startPrdBuffCrawler,
     getBuffCrawlerLog,
     stopBuffCrawler,
-    restartBuffCrawler
+    restartBuffCrawler,
+    showNotification
 } from "./MainProcess/services";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -117,6 +118,15 @@ async function createWindow() {
         console.log("let us get buff logs    ");
         getBuffCrawlerLog();
     });
+
+    ipcMain.on("notifyLoopEnd", () => {
+        
+        showNotification({
+            title : `通知！！！`,
+            body : `本次循环任务已经完成！`,
+            timeoutType : 'never'
+        })
+    })
 }
 
 // Quit when all windows are closed.

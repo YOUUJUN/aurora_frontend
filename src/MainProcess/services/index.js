@@ -1,6 +1,7 @@
 const Path = require("path");
 const util = require("util");
 const execFile = util.promisify(require("child_process").execFile);
+import { Notification } from "electron";
 
 const buffCrawlerPath = Path.resolve("../backend");
 
@@ -91,4 +92,12 @@ export async function getBuffCrawlerLog() {
     } catch (e) {
         console.log(e);
     }
+}
+
+
+export function showNotification (options){
+    console.log('if notify works', Notification.isSupported());
+    let notify = new Notification(options);
+    notify.timeoutType = "never";
+    notify.show();
 }

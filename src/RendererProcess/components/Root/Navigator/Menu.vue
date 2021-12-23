@@ -73,6 +73,7 @@
 </script>
 
 <script>
+    import { sendMessageToNode } from "@/RendererProcess/utilities";
     import { defineComponent } from 'vue'
     import { io } from "socket.io-client";
 
@@ -99,15 +100,21 @@
 
              testPost() {
 
-            
+                // const NOTIFICATION_TITLE = 'Title'
+                // const NOTIFICATION_BODY = 'Notification from the Renderer process. Click to log to console.'
+
+                // new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY });
+                
+                const socket = io('ws://localhost:8888/');
+                socket.once('news', (payload) => {
+                    sendMessageToNode("notifyLoopEnd");
+                })
                 
 
                 this.$http({
                     url : '/test',
                 }).then((res)=>{
                     console.log('res', res);
-
-
 
                 })
             }
