@@ -45,7 +45,7 @@
 
             <el-button :icon="Setting" round @click="openSetting()">设置</el-button>
 
-            <el-button :icon="Setting" round @click="testPost()">测试</el-button>
+            <el-button :icon="Setting" round @click="test()">测试</el-button>
 
         </div>
 
@@ -100,23 +100,25 @@
 
              testPost() {
 
-                // const NOTIFICATION_TITLE = 'Title'
-                // const NOTIFICATION_BODY = 'Notification from the Renderer process. Click to log to console.'
-
-                // new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY });
                 
-                const socket = io('ws://localhost:8888/');
-                socket.once('news', (payload) => {
-                    sendMessageToNode("notifyLoopEnd");
-                })
+                // const socket = io('ws://localhost:8888/');
+                // socket.once('news', (payload) => {
+                //     sendMessageToNode("notifyLoopEnd");
+                // })
                 
 
-                this.$http({
-                    url : '/test',
-                }).then((res)=>{
-                    console.log('res', res);
+                // this.$http({
+                //     url : '/test',
+                // }).then((res)=>{
+                //     console.log('res', res);
 
-                })
+                // })
+            },
+
+            test(){
+                console.log('printer', printer);
+
+
             }
         }
     })

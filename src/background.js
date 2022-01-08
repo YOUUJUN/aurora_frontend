@@ -10,7 +10,8 @@ import {
     getBuffCrawlerLog,
     stopBuffCrawler,
     restartBuffCrawler,
-    showNotification
+    showNotification,
+    test
 } from "./MainProcess/services";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -127,6 +128,11 @@ async function createWindow() {
             timeoutType : 'never'
         })
     })
+
+    ipcMain.on('test', () => {
+        test();
+    });
+
 }
 
 // Quit when all windows are closed.

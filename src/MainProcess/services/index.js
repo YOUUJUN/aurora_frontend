@@ -101,3 +101,8 @@ export function showNotification (options){
     notify.timeoutType = "never";
     notify.show();
 }
+
+
+export function test(){
+    
+}
