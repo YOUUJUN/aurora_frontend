@@ -1,6 +1,6 @@
 <template>
 
-    <template class="container">
+    <section class="container">
 
         <el-drawer
                 custom-class="Setting blurred_bg blur40 bg2"
@@ -13,9 +13,7 @@
             <span>Hi, there!</span>
         </el-drawer>
 
-    </template>
-
-
+    </section>
 
 </template>
 
